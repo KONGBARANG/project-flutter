@@ -22,6 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null && args['email'] != null && _emailC.text.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _emailC.text = args['email'];
+      });
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
