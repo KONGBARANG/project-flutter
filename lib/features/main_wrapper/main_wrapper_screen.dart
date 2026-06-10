@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../home/home_screen.dart';
 import '../notification/notification_screen.dart';
 import '../profile/profile_screen.dart';
 import '../setting/setting_screen.dart';
 import '../api_test/api_test_screen.dart';
+import '../products/product_list_screen.dart';
+import '../cart/cart_screen.dart';
+import '../../providers/cart_provider.dart';
 
 class MainWrapperScreen extends StatefulWidget {
   const MainWrapperScreen({super.key});
@@ -15,13 +19,23 @@ class MainWrapperScreen extends StatefulWidget {
 class _MainWrapperScreenState extends State<MainWrapperScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomeScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
-    SettingScreen(),
-    ApiTestScreen(),
-  ];
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomeScreen(),
+      const NotificationScreen(),
+      const ProfileScreen(),
+      const SettingScreen(),
+      const ApiTestScreen(),
+      const ProductListScreen(),
+      Consumer<CartProvider>(
+        builder: (context, cartProvider, _) => CartScreen(cartProvider: cartProvider),
+      ),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -34,6 +48,37 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Project Mobile App'),
+        actions: [
+          // Cart badge
+          Consumer<CartProvider>(
+            builder: (context, cartProvider, _) => Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () => _onItemTapped(6),
+                  ),
+                  if (cartProvider.itemCount > 0)
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                      child: Text(
+                        '${cartProvider.itemCount}',
+                        style: const TextStyle(color: Colors.white, fontSize: 10),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -41,7 +86,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.deepPurple),
-              child: Text('Menu', style: TextStyle(color: Colors.white)),
+              child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
             ListTile(
               leading: const Icon(Icons.home),
@@ -49,6 +94,22 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(0);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.shopping_bag),
+              title: const Text('Products'),
+              onTap: () {
+                Navigator.pop(context);
+                _onItemTapped(5);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text('Cart'),
+              onTap: () {
+                Navigator.pop(context);
+                _onItemTapped(6);
               },
             ),
             ListTile(
@@ -89,6 +150,8 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
           BottomNavigationBarItem(icon: Icon(Icons.api), label: 'API'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Shop'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
         ],
       ),
     );

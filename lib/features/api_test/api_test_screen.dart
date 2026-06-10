@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/api_services.dart';
 
 class ApiTestScreen extends StatelessWidget {
   const ApiTestScreen({super.key});
@@ -8,11 +9,17 @@ class ApiTestScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            // TODO: call API service
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('API test tapped')),
-            );
+          onPressed: () async {
+            try {
+              final data = await ApiServices.testGetPosts();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Title: ${data['title']}')),
+              );
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: $e')),
+              );
+            }
           },
           child: const Text('Call API test'),
         ),

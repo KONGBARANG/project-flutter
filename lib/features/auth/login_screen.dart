@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
+import '../../widgets/custom_textfield.dart';
+import '../../widgets/custom_button.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailC = TextEditingController();
+  final _passC = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailC.dispose();
+    _passC.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,19 +29,21 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const TextField(decoration: InputDecoration(labelText: 'Email')),
+            CustomTextField(controller: _emailC, label: 'Email'),
             const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Password'), obscureText: true),
+            CustomTextField(controller: _passC, label: 'Password', obscureText: true),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomButton(
+              label: 'Login',
               onPressed: () {
-                // TODO: implement login
+                // Simple demo behaviour
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Logged in as ${_emailC.text}')),
+                );
               },
-              child: const Text('Login'),
             ),
             TextButton(
               onPressed: () {
-                // Navigate to register
                 Navigator.pushNamed(context, '/register');
               },
               child: const Text('Register'),

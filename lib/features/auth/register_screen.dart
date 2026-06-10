@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
+import '../../widgets/custom_textfield.dart';
+import '../../widgets/custom_button.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nameC = TextEditingController();
+  final _emailC = TextEditingController();
+  final _passC = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameC.dispose();
+    _emailC.dispose();
+    _passC.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +31,19 @@ class RegisterScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const TextField(decoration: InputDecoration(labelText: 'Name')),
+            CustomTextField(controller: _nameC, label: 'Name'),
             const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Email')),
+            CustomTextField(controller: _emailC, label: 'Email'),
             const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Password'), obscureText: true),
+            CustomTextField(controller: _passC, label: 'Password', obscureText: true),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('Register'),
+            CustomButton(
+              label: 'Register',
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Registered ${_nameC.text}')),
+                );
+              },
             ),
           ],
         ),
