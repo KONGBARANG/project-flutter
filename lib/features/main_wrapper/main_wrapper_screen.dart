@@ -49,6 +49,11 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
       appBar: AppBar(
         title: const Text('Project Mobile App'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.login),
+            tooltip: 'Login',
+            onPressed: () => Navigator.pushNamed(context, '/login'),
+          ),
           // Cart badge
           Consumer<CartProvider>(
             builder: (context, cartProvider, _) => Padding(
@@ -87,6 +92,14 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.deepPurple),
               child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 20)),
+            ),
+            ListTile(
+              leading: const Icon(Icons.login),
+              title: const Text('Login'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/login');
+              },
             ),
             ListTile(
               leading: const Icon(Icons.home),
