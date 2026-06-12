@@ -36,7 +36,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 12),
             CustomTextField(controller: _emailC, label: 'Email'),
             const SizedBox(height: 12),
-            CustomTextField(controller: _passC, label: 'Password', obscureText: true),
+            CustomTextField(
+              controller: _passC,
+              label: 'Password',
+              obscureText: true,
+            ),
             const SizedBox(height: 20),
             if (_loading)
               const CircularProgressIndicator()
@@ -47,29 +51,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   final name = _nameC.text.trim();
                   final email = _emailC.text.trim();
                   final pass = _passC.text;
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  final navigator = Navigator.of(context);
 
                   String? error;
                   if (name.isEmpty) error = 'Name is required';
-                  if (error == null && email.isEmpty) error = 'Email is required';
-                  if (error == null && !RegExp(r"^[\w-.]+@([\w-]+\.)+[\w-]{2,4}").hasMatch(email)) error = 'Invalid email';
-                  if (error == null && pass.length < 6) error = 'Password must be at least 6 characters';
+                  if (error == null && email.isEmpty)
+                    error = 'Email is required';
+                  if (error == null &&
+                      !RegExp(
+                        r"^[\w-.]+@([\w-]+\.)+[\w-]{2,4}",
+                      ).hasMatch(email))
+                    error = 'Invalid email';
+                  if (error == null && pass.length < 6)
+                    error = 'Password must be at least 6 characters';
 
                   if (error != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                    scaffoldMessenger.showSnackBar(
+                      SnackBar(content: Text(error)),
+                    );
                     return;
                   }
 
                   setState(() => _loading = true);
                   // Simulate registering process
                   await Future.delayed(const Duration(milliseconds: 800));
+                  if (!mounted) return;
                   setState(() => _loading = false);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  scaffoldMessenger.showSnackBar(
                     SnackBar(content: Text('Registered $name')),
                   );
 
                   // Navigate to login and prefill email
-                  Navigator.pushNamed(context, '/login', arguments: {'email': email});
+                  if (!mounted) return;
+                  navigator.pushNamed('/login', arguments: {'email': email});
                 },
               ),
           ],
