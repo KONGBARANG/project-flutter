@@ -10,13 +10,14 @@ class ApiTestScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
+            final scaffoldMessenger = ScaffoldMessenger.of(context);
             try {
               final data = await ApiServices.testGetPosts();
-              ScaffoldMessenger.of(context).showSnackBar(
+              scaffoldMessenger.showSnackBar(
                 SnackBar(content: Text('Title: ${data['title']}')),
               );
             } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
+              scaffoldMessenger.showSnackBar(
                 SnackBar(content: Text('Error: $e')),
               );
             }
