@@ -8,6 +8,7 @@ import '../api_test/api_test_screen.dart';
 import '../products/product_list_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/auth_provider.dart';
 
 class MainWrapperScreen extends StatefulWidget {
   const MainWrapperScreen({super.key});
@@ -45,14 +46,25 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+    if (!auth.isLoggedIn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/');
+      });
+      return const SizedBox.shrink();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Project Mobile App'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.login),
-            tooltip: 'Login',
-            onPressed: () => Navigator.pushNamed(context, '/login'),
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () {
+              auth.logout();
+              Navigator.pushReplacementNamed(context, '/');
+            },
           ),
           // Cart badge
           Consumer<CartProvider>(
@@ -94,11 +106,12 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
               child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
             ListTile(
-              leading: const Icon(Icons.login),
-              title: const Text('Login'),
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/login');
+                auth.logout();
+                Navigator.pushReplacementNamed(context, '/');
               },
             ),
             ListTile(
