@@ -58,19 +58,13 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
       appBar: AppBar(
         title: const Text('Project Mobile App'),
         actions: [
-          Consumer<AuthProvider>(
-            builder: (context, auth, _) => IconButton(
-              icon: Icon(auth.isLoggedIn ? Icons.logout : Icons.login),
-              tooltip: auth.isLoggedIn ? 'Logout' : 'Login',
-              onPressed: () {
-                if (auth.isLoggedIn) {
-                  auth.logout();
-                  Navigator.pushReplacementNamed(context, '/');
-                  return;
-                }
-                Navigator.pushNamed(context, '/login');
-              },
-            ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () {
+              auth.logout();
+              Navigator.pushReplacementNamed(context, '/');
+            },
           ),
           // Cart badge
           Consumer<CartProvider>(
@@ -111,20 +105,14 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
               decoration: BoxDecoration(color: Colors.deepPurple),
               child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
-            Consumer<AuthProvider>(
-              builder: (context, auth, _) => ListTile(
-                leading: Icon(auth.isLoggedIn ? Icons.logout : Icons.login),
-                title: Text(auth.isLoggedIn ? 'Logout' : 'Login'),
-                onTap: () {
-                  Navigator.pop(context);
-                  if (auth.isLoggedIn) {
-                    auth.logout();
-                    Navigator.pushReplacementNamed(context, '/');
-                    return;
-                  }
-                  Navigator.pushNamed(context, '/login');
-                },
-              ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {
+                Navigator.pop(context);
+                auth.logout();
+                Navigator.pushReplacementNamed(context, '/');
+              },
             ),
             ListTile(
               leading: const Icon(Icons.home),
