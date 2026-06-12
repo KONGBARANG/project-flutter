@@ -8,6 +8,7 @@ import '../api_test/api_test_screen.dart';
 import '../products/product_list_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/auth_provider.dart';
 
 class MainWrapperScreen extends StatefulWidget {
   const MainWrapperScreen({super.key});
@@ -45,14 +46,31 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+    if (!auth.isLoggedIn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/');
+      });
+      return const SizedBox.shrink();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Project Mobile App'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.login),
-            tooltip: 'Login',
-            onPressed: () => Navigator.pushNamed(context, '/login'),
+          Consumer<AuthProvider>(
+            builder: (context, auth, _) => IconButton(
+              icon: Icon(auth.isLoggedIn ? Icons.logout : Icons.login),
+              tooltip: auth.isLoggedIn ? 'Logout' : 'Login',
+              onPressed: () {
+                if (auth.isLoggedIn) {
+                  auth.logout();
+                  Navigator.pushReplacementNamed(context, '/');
+                  return;
+                }
+                Navigator.pushNamed(context, '/login');
+              },
+            ),
           ),
           // Cart badge
           Consumer<CartProvider>(
@@ -93,13 +111,20 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
               decoration: BoxDecoration(color: Colors.deepPurple),
               child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
-            ListTile(
-              leading: const Icon(Icons.login),
-              title: const Text('Login'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/login');
-              },
+            Consumer<AuthProvider>(
+              builder: (context, auth, _) => ListTile(
+                leading: Icon(auth.isLoggedIn ? Icons.logout : Icons.login),
+                title: Text(auth.isLoggedIn ? 'Logout' : 'Login'),
+                onTap: () {
+                  Navigator.pop(context);
+                  if (auth.isLoggedIn) {
+                    auth.logout();
+                    Navigator.pushReplacementNamed(context, '/');
+                    return;
+                  }
+                  Navigator.pushNamed(context, '/login');
+                },
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.home),

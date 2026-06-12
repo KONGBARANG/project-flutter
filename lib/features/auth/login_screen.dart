@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
+import '../../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailC.text = args['email'];
       });
     }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
@@ -42,10 +45,20 @@ class _LoginScreenState extends State<LoginScreen> {
             CustomButton(
               label: 'Login',
               onPressed: () {
-                // Simple demo behaviour
+                final email = _emailC.text.trim();
+                final password = _passC.text;
+                if (email.isEmpty || password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please fill in email and password')),
+                  );
+                  return;
+                }
+
+                context.read<AuthProvider>().login(email);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Logged in as ${_emailC.text}')),
+                  SnackBar(content: Text('Logged in as $email')),
                 );
+                Navigator.pushReplacementNamed(context, '/');
               },
             ),
             TextButton(
