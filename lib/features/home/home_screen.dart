@@ -1,48 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
+import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart'; // ១. Import LanguageProvider ចូលមក
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
+  // អនុគមន៍ជំនួយសម្រាប់បកប្រែឈ្មោះ Category ដែលសរសេរចាក់ងាប់
+  String _getTranslatedCategory(String categoryName, LanguageProvider langProvider) {
+    switch (categoryName) {
+      case 'Clothes':
+        return langProvider.translate('cat_clothes');
+      case 'Jewelry':
+        return langProvider.translate('cat_jewelry');
+      case 'Tech':
+        return langProvider.translate('cat_tech');
+      case 'Bags':
+        return langProvider.translate('cat_bags');
+      default:
+        return categoryName;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // ២. ហៅប្រើ LanguageProvider នៅក្នុងទំព័រនេះ
+    final langProvider = Provider.of<LanguageProvider>(context);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Promotional Hero Banner
-            _buildPromoBanner(),
+            // 1. Promotional Hero Banner (ប្ដូរអក្សរខាងក្នុងតាមភាសា)
+            _buildPromoBanner(langProvider),
             const SizedBox(height: 24),
             
             // 2. Quick Categories
-            const Text(
-              "Top Categories",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              langProvider.translate('top_categories'), // "ប្រភេទទំនិញពេញនិយម" / "Top Categories"
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            _buildCategoryRow(),
+            _buildCategoryRow(langProvider),
             const SizedBox(height: 24),
             
             // 3. Trending Products (Horizontal Scroll)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Trending Now",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  langProvider.translate('trending_now'), // "ទំនិញកំពុងពេញនិយម" / "Trending Now"
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
                   onPressed: () {
                     // TODO: Navigate to the Shop page
                   },
-                  child: const Text("See All"),
+                  child: Text(langProvider.translate('see_all')), // "មើលទាំងអស់" / "See All"
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            _buildTrendingList(),
+            _buildTrendingList(langProvider),
           ],
         ),
       ),
@@ -51,10 +71,10 @@ class HomeScreen extends StatelessWidget {
 
   // --- Widget Builders ---
 
-  Widget _buildPromoBanner() {
+  Widget _buildPromoBanner(LanguageProvider langProvider) {
     return Container(
       width: double.infinity,
-      height: 200, // <-- INCREASED THIS FROM 160 TO 200
+      height: 200, 
       decoration: BoxDecoration(
         color: Colors.deepPurple.shade50, 
         borderRadius: BorderRadius.circular(16),
@@ -70,9 +90,9 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Summer Sale",
-              style: TextStyle(
+            Text(
+              langProvider.translate('summer_sale'), // "ការលក់បញ្ចុះតម្លៃរដូវក្ដៅ"
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -80,9 +100,9 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Up to 50% Off\non selected items",
-              style: TextStyle(
+            Text(
+              langProvider.translate('up_to_50'), // "បញ្ចុះតម្លៃរហូតដល់ ៥០%..."
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,
                 shadows: [Shadow(color: Colors.black45, blurRadius: 4)],
@@ -95,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.deepPurple,
               ),
-              child: const Text("Shop Now"),
+              child: Text(langProvider.translate('shop_now')), // "ទិញឥឡូវនេះ"
             ),
           ],
         ),
@@ -103,8 +123,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryRow() {
-    // List of categories matching your shop page
+  Widget _buildCategoryRow(LanguageProvider langProvider) {
     final categories = [
       {'icon': Icons.checkroom, 'name': 'Clothes'},
       {'icon': Icons.watch, 'name': 'Jewelry'},
@@ -115,6 +134,7 @@ class HomeScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: categories.map((cat) {
+        final rawName = cat['name'] as String;
         return Column(
           children: [
             CircleAvatar(
@@ -123,14 +143,17 @@ class HomeScreen extends StatelessWidget {
               child: Icon(cat['icon'] as IconData, color: Colors.deepPurple, size: 28),
             ),
             const SizedBox(height: 8),
-            Text(cat['name'] as String, style: const TextStyle(fontWeight: FontWeight.w500)),
+            Text(
+              _getTranslatedCategory(rawName, langProvider), // ប្ដូរឈ្មោះប្រភេទតាមភាសា (Clothes -> សម្លៀកបំពាក់)
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
           ],
         );
       }).toList(),
     );
   }
 
-  Widget _buildTrendingList() {
+  Widget _buildTrendingList(LanguageProvider langProvider) {
     final List<String> trendingImages = [
       'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80', 
       'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=400&q=80', 
@@ -142,24 +165,23 @@ class HomeScreen extends StatelessWidget {
       height: 220,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(), // <-- This makes the scrolling feel bouncy and smooth
+        physics: const BouncingScrollPhysics(), 
         itemCount: trendingImages.length, 
         itemBuilder: (context, index) {
-          
-          // <-- GESTURE DETECTOR ADDED HERE -->
           return GestureDetector(
             onTap: () {
-              // This is what happens when the user clicks the item!
-              // For now, we will show a little pop-up message at the bottom of the screen.
+              // បកប្រែអក្សរលោតនៅក្នុង SnackBar ពេលចុចលើទំនិញ
+              final currentLang = langProvider.currentLocale;
+              final alertMsg = currentLang == 'km' 
+                  ? 'កំពុងបើកទំនិញពេញនិយមទី ${index + 1}...' 
+                  : 'Opening Trending Item ${index + 1}...';
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Opening Trending Item ${index + 1}...'),
+                  content: Text(alertMsg),
                   duration: const Duration(seconds: 1),
                 ),
               );
-              
-              // Later, your team will change this to navigate to a Product Detail Page:
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailPage()));
             },
             child: Container(
               width: 150,
@@ -200,7 +222,9 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Trending Item ${index + 1}",
+                          langProvider.currentLocale == 'km'
+                              ? "ទំនិញពេញនិយមទី ${index + 1}"
+                              : "Trending Item ${index + 1}",
                           style: const TextStyle(fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
