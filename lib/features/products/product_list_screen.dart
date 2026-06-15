@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/product.dart';
 import '../../services/api_services.dart';
 import '../product_detail/product_detail_screen.dart';
+import '../../providers/language_provider.dart'; // ១. Import LanguageProvider ចូលមក
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -58,6 +60,24 @@ class _ProductListScreenState extends State<ProductListScreen> {
     });
   }
 
+  // អនុគមន៍ជំនួយសម្រាប់បកប្រែឈ្មោះ Category ដែលបានមកពី API
+  String _getTranslatedCategory(String category, LanguageProvider langProvider) {
+    switch (category) {
+      case 'All':
+        return langProvider.translate('cat_all');
+      case 'electronics':
+        return langProvider.translate('cat_electronics');
+      case 'jewelery':
+        return langProvider.translate('cat_jewelery_filter');
+      case "men's clothing":
+        return langProvider.translate('cat_men_clothing');
+      case "women's clothing":
+        return langProvider.translate('cat_women_clothing');
+      default:
+        return category; // បើអត់មានក្នុងសៀវភៅពាក្យ ឱ្យបង្ហាញតម្លៃដើមពី API
+    }
+  }
+
   @override
   void dispose() {
     _searchC.dispose();
@@ -66,8 +86,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ២. ហៅប្រើ LanguageProvider នៅក្នុងទំព័រនេះ
+    final langProvider = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      // ៣. ប្ដូរចំណងជើង App Bar ទៅជាភាសាតាមការកំណត់ (Products -> ផលិតផល)
+      appBar: AppBar(title: Text(langProvider.translate('products_title'))),
       body: FutureBuilder<List<Product>>(
         future: _productsFuture,
         builder: (context, snapshot) {
@@ -91,10 +115,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 child: TextField(
                   controller: _searchC,
                   onChanged: (_) => _applyFilter(),
-                  decoration: const InputDecoration(
-                    labelText: 'Search products',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.search),
+                  decoration: InputDecoration(
+                    // ៤. ប្ដូរអក្សរ Hint ក្នុងប្រឡោះស្វែងរក (Search products -> ស្វែងរកផលិតផល)
+                    labelText: langProvider.translate('search_hint'),
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.search),
                   ),
                 ),
               ),
@@ -110,7 +135,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: FilterChip(
-                        label: Text(cat),
+                        // ៥. ហៅអនុគមន៍បកប្រែឈ្មោះប្រភេទទំនិញពី API ដើម្បីបង្ហាញជាភាសាខ្មែរ/អង់គ្លេស
+                        label: Text(_getTranslatedCategory(cat, langProvider)),
                         selected: _selectedCategory == cat,
                         onSelected: (selected) {
                           setState(() {
@@ -173,7 +199,11 @@ class ProductCard extends StatelessWidget {
               child: Container(
                 color: Colors.grey[200],
                 width: double.infinity,
-                child: Image.network(product.image, fit: BoxFit.cover, errorBuilder: (_, _, _) => const Icon(Icons.image)),
+                child: Image.network(
+                  product.image, 
+                  fit: BoxFit.cover, 
+                  errorBuilder: (_, _, _) => const Icon(Icons.image),
+                ),
               ),
             ),
             Padding(
@@ -181,12 +211,20 @@ class ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    product.title, 
+                    maxLines: 2, 
+                    overflow: TextOverflow.ellipsis, 
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('\$${product.price.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                      Text(
+                        '\$${product.price.toStringAsFixed(2)}', 
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                      ),
                       Row(
                         children: [
                           const Icon(Icons.star, size: 14, color: Colors.amber),
