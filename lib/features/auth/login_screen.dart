@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart'; // Import LanguageProvider to translate button text
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,25 +43,44 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 12),
             CustomTextField(controller: _passC, label: 'Password', obscureText: true),
             const SizedBox(height: 20),
-            CustomButton(
-              label: 'Login',
-              onPressed: () {
-                final email = _emailC.text.trim();
-                final password = _passC.text;
-                if (email.isEmpty || password.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please fill in email and password')),
-                  );
-                  return;
-                }
+            // Use LanguageProvider to translate the login button label
+            Builder(builder: (context) {
+              final langProvider = Provider.of<LanguageProvider>(context);
 
-                context.read<AuthProvider>().login(email);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Logged in as $email')),
-                );
-                Navigator.pushReplacementNamed(context, '/');
-              },
-            ),
+              return FilledButton(
+                onPressed: () {
+                  final email = _emailC.text.trim();
+                  final password = _passC.text;
+                  if (email.isEmpty || password.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(langProvider.translate('please_fill_email_pass') ?? 'Please fill in email and password')),
+                    );
+                    return;
+                  }
+
+                  context.read<AuthProvider>().login(email);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${langProvider.translate('logged_in_as') ?? 'Logged in as'} $email')),
+                  );
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF673AB7),
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  langProvider.translate('login'),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            }),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/register');
