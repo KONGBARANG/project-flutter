@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart'; // ១. Import LanguageProvider ចូលមក
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   // អនុគមន៍ជំនួយសម្រាប់បកប្រែឈ្មោះ Category ដែលសរសេរចាក់ងាប់
   String _getTranslatedCategory(String categoryName, LanguageProvider langProvider) {

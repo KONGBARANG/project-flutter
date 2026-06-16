@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
-import '../../widgets/custom_button.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/language_provider.dart'; // Import LanguageProvider to translate button text
+import '../../providers/language_provider.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,9 +42,16 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 12),
             CustomTextField(controller: _passC, label: 'Password', obscureText: true),
             const SizedBox(height: 20),
-            // Use LanguageProvider to translate the login button label
+            
+            // ប្រើប្រាស់ Builder ដើម្បីទាញយកភាសាមកដាក់លើប៊ូតុង
             Builder(builder: (context) {
               final langProvider = Provider.of<LanguageProvider>(context);
+              
+              // ទាញយកពាក្យបកប្រែ បើគ្មានទេ (null ឬ ទទេ) ឱ្យដាក់ពាក្យ 'Login' ជំនួសដើម្បីកុំឱ្យបាត់អក្សរ
+              String loginText = langProvider.translate('login') ?? 'Login';
+              if (loginText.trim().isEmpty) {
+                loginText = 'Login';
+              }
 
               return FilledButton(
                 onPressed: () {
@@ -53,26 +59,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   final password = _passC.text;
                   if (email.isEmpty || password.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(langProvider.translate('please_fill_email_pass') ?? 'Please fill in email and password')),
+                      SnackBar(
+                        content: Text(
+                          langProvider.translate('please_fill_email_pass') ?? 'Please fill in email and password'
+                        ),
+                      ),
                     );
                     return;
                   }
 
                   context.read<AuthProvider>().login(email);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${langProvider.translate('logged_in_as') ?? 'Logged in as'} $email')),
+                    SnackBar(
+                      content: Text(
+                        '${langProvider.translate('logged_in_as') ?? 'Logged in as'} $email'
+                      ),
+                    ),
                   );
                   Navigator.pushReplacementNamed(context, '/');
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF673AB7),
-                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: const Color(0xFF673AB7), // ពណ៌ស្វាយដិតស្របតាមម៉ូតរបស់បង
+                  minimumSize: const Size(double.infinity, 50), // ទទឹងពេញ កម្ពស់ ៥០ ងាយស្រួលចុច
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12), // ជ្រុងមូលស្អាតសមសួន
                   ),
                 ),
                 child: Text(
-                  langProvider.translate('login'),
+                  loginText, // បង្ហាញអក្សរដែលបានផ្ទៀងផ្ទាត់រួច (ធានាថាមិនបាត់អក្សរទៀតឡើយ)
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -81,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             }),
+            const SizedBox(height: 12),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/register');
