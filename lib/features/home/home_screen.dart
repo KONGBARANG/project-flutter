@@ -195,10 +195,10 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildTrendingList(BuildContext context, LanguageProvider langProvider) {
     final List<String> trendingImages = [
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80', 
-      'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=400&q=80', 
-      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=400&q=80', 
-      'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=400&q=80', 
+      'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fENsZWFuJTIwY2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D', 
+      'https://media.istockphoto.com/id/946468798/photo/men-select-new-shirt-in-shopping-mall.webp?a=1&b=1&s=612x612&w=0&k=20&c=Xo_9XnctWAul4X3eSTZ0iI2ps9ycztYub4KgQWCErgA=', 
+      'https://images.unsplash.com/photo-1687226425845-2f2ab8bf9dcf?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIxfHx8ZW58MHx8fHx8', 
+      'https://images.unsplash.com/photo-1731865383721-0fd2f97ee077?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIzfHx8ZW58MHx8fHx8', 
     ];
 
     final bool isKhmer = langProvider.currentLocale == 'km';
