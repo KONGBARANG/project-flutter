@@ -10,6 +10,7 @@ import 'providers/cart_provider.dart';
 import 'providers/language_provider.dart';
 import 'providers/profile_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/order_provider.dart'; // ត្រូវប្រាកដថា path នេះត្រឹមត្រូវតាមរចនាសម្ព័ន្ធ Folder របស់អ្នក
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -33,9 +34,10 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => LanguageProvider()), // បន្ថែម LanguageProvider ទៅក្នុង MultiProvider
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) => MaterialApp(

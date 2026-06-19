@@ -4,6 +4,7 @@ import '../../providers/language_provider.dart';
 import '../../providers/cart_provider.dart'; 
 import '../products/product_list_screen.dart';
 import '../../models/product.dart';
+import '../orders/order_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,56 +25,67 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     final langProvider = Provider.of<LanguageProvider>(context);
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Promotional Hero Banner
-            _buildPromoBanner(context, langProvider),
-            const SizedBox(height: 24),
-            
-            // 2. Quick Categories
-            Text(
-              langProvider.translate('top_categories'), 
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildCategoryRow(context, langProvider),
-            const SizedBox(height: 24),
-            
-            // 3. Trending Products (Horizontal Scroll)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  langProvider.translate('trending_now'), 
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ProductListScreen(),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    langProvider.translate('see_all'), 
-                    style: const TextStyle(color: Color(0xFFBB86FC)),
+    // ត្រឡប់មកវិញនូវ Scaffold ដែលមាន AppBar និង body
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Shopify"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            tooltip: 'My Orders',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const OrderScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildPromoBanner(context, langProvider),
+              const SizedBox(height: 24),
+              Text(
+                langProvider.translate('top_categories'), 
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              _buildCategoryRow(context, langProvider),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    langProvider.translate('trending_now'), 
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildTrendingList(context, langProvider), 
-          ],
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProductListScreen()),
+                      );
+                    },
+                    child: Text(
+                      langProvider.translate('see_all'), 
+                      style: const TextStyle(color: Color(0xFFBB86FC)),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildTrendingList(context, langProvider), 
+            ],
+          ),
         ),
       ),
     );
