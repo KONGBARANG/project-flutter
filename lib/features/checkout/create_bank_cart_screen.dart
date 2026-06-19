@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart'; // កែតម្រូវ Import ឱ្យត្រូវ
-import '../../models/card_model.dart'; 
+import '../../models/cart_model.dart'; 
 
 class CreateBankCardScreen extends StatefulWidget {
   const CreateBankCardScreen({super.key});

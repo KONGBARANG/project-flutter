@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../models/cart_item.dart';
-import '../models/card_model.dart'; 
+import '../models/cart_model.dart'; 
 
 class CartProvider extends ChangeNotifier {
   // --- ផ្នែក Cart ---

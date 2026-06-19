@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/cart_provider.dart'; 
 import '../products/product_list_screen.dart';
+import '../../models/product.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -299,16 +300,16 @@ class HomeScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                                 onTap: () {
                                   // 🟢 FIX ADD_TO_CART: បានតម្រូវទម្រង់ផ្ញើតម្លៃទៅកាន់ CartProvider ឱ្យបានត្រឹមត្រូវ
-                                  // final newProduckt = Product(
-                                  //   id: index + 100,
-                                  //   title: title,
-                                  //   price: price,
-                                  //   description: 'Description for $title',
-                                  //   category: 'trending',
-                                  //   image: imageUrl,
-                                  //   rating: 4.5,
-                                  // );
-                                  // Provider.of<CartProvider>(context, listen: false).addToCart(newProduckt);
+                                  final newProduckt = Product(
+                                    id: index + 100,
+                                    title: title,
+                                    price: price,
+                                    description: 'Description for $title',
+                                    category: 'trending',
+                                    image: imageUrl,
+                                    rating: 4.5,
+                                  );
+                                  Provider.of<CartProvider>(context, listen: false).addToCart(newProduckt);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
