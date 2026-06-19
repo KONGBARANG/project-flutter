@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/language_provider.dart';
+// ត្រូវប្រាកដថាបាន Import ឯកសារនេះត្រឹមត្រូវ
+import 'bank_cart_screen.dart'; 
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -17,10 +19,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _phoneC = TextEditingController();
   final _addressC = TextEditingController();
 
-  // បន្ថែម Controller សម្រាប់ព័ត៌មានកាត
-  final _cardC = TextEditingController();
-  final _expiryC = TextEditingController();
-  final _cvvC = TextEditingController();
+  // អថេរសម្រាប់រក្សាលេខកាតដែលជ្រើសរើស
+  String? _selectedCard;
 
   @override
   void dispose() {
@@ -28,38 +28,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _emailC.dispose();
     _phoneC.dispose();
     _addressC.dispose();
-    _cardC.dispose();
-    _expiryC.dispose();
-    _cvvC.dispose();
     super.dispose();
   }
 
-  // មុខងារសម្រាប់បើក Dialog បំពេញកាត
-  void _showPaymentDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter Card Details'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: _cardC, decoration: const InputDecoration(labelText: 'Card Number')),
-            TextField(controller: _expiryC, decoration: const InputDecoration(labelText: 'Expiry Date')),
-            TextField(controller: _cvvC, decoration: const InputDecoration(labelText: 'CVV')),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Card details saved!')));
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+  // មុខងារសម្រាប់បើក BankCardsScreen
+  Future<void> _navigateToBankCards() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const BankCardsScreen()),
     );
+
+    if (result != null && result is String) {
+      setState(() {
+        _selectedCard = result;
+      });
+    }
   }
 
   @override
@@ -86,21 +69,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Text('Payment Method', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 16),
 
-              // Container ដែលអាចចុចបាន
+              // Container សម្រាប់ជ្រើសរើសកាត
               InkWell(
-                onTap: _showPaymentDialog,
+                onTap: _navigateToBankCards,
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.deepPurple),
+                    border: Border.all(color: _selectedCard != null ? Colors.deepPurple : Colors.grey),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.credit_card, color: Colors.deepPurple),
-                      SizedBox(width: 12),
-                      Text('Credit Card (Tap to edit)'),
+                      const Icon(Icons.credit_card, color: Colors.deepPurple),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _selectedCard ?? 'Select a Payment Method',
+                          style: TextStyle(
+                            color: _selectedCard != null ? Colors.black : Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
                     ],
                   ),
                 ),
@@ -120,9 +111,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       return;
                     }
                     
-                    // ពិនិត្យថាតើបានបំពេញកាតដែរឬនៅ
-                    if (_cardC.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter card details first')));
+                    // ពិនិត្យថាតើបានជ្រើសរើសកាតដែរឬនៅ
+                    if (_selectedCard == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please select a payment card first!')),
+                      );
                       return;
                     }
 
@@ -142,7 +135,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   icon: const Icon(Icons.check_circle_outline, color: Colors.white),
-                  label: Text(langProvider.translate('place_order'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  label: Text(
+                    langProvider.translate('place_order'), 
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 );
               }),
             ],
