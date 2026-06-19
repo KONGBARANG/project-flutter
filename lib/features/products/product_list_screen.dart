@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 import '../../models/product.dart';
 import '../../services/api_services.dart';
 import '../product_detail/product_detail_screen.dart';
-import '../../providers/language_provider.dart'; // ១. Import LanguageProvider ចូលមក
+import '../../providers/language_provider.dart'; 
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+  final String? initialCategory;
+  final String? initialSearch;
+
+  const ProductListScreen({super.key, this.initialCategory, this.initialSearch});
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -19,6 +22,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   final _searchC = TextEditingController();
   String _selectedCategory = 'All';
   List<String> _categories = ['All'];
+  bool _initializedFilters = false;
 
   @override
   void initState() {
@@ -28,7 +32,25 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   void _loadProducts() {
-    _productsFuture = ApiServices.getProducts();
+    // ទាញយកទិន្នន័យពី API មកទុកក្នុង Future
+    _productsFuture = ApiServices.getProducts().then((products) {
+      _allProducts = products;
+      
+      // រៀបចំ Filter ដើមដំបូង (Initial Filters) តែម្តងគត់នៅពេលទាញទិន្នន័យបានជោគជ័យ
+      if (!_initializedFilters) {
+        _initializedFilters = true;
+        if (widget.initialCategory != null && widget.initialCategory!.isNotEmpty) {
+          _selectedCategory = widget.initialCategory!;
+        }
+        if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
+          _searchC.text = widget.initialSearch!;
+        }
+      }
+
+      // អនុវត្ត Filter ភ្លាមៗបន្ទាប់ពីបានទិន្នន័យ
+      _applyFilterWithoutState();
+      return products;
+    });
   }
 
   void _loadCategories() async {
@@ -42,21 +64,27 @@ class _ProductListScreenState extends State<ProductListScreen> {
     }
   }
 
-  void _applyFilter() {
+  // បំបែកមុខងារ Filter មួយទៀតដែលមិនប្រើ setState ដើម្បីជៀសវាង Infinite Loop ក្នុង Future
+  void _applyFilterWithoutState() {
     List<Product> filtered = _allProducts;
     
-    // Filter by category
+    // Filter តាមប្រភេទ (Category)
     if (_selectedCategory != 'All') {
       filtered = filtered.where((p) => p.category == _selectedCategory).toList();
     }
 
-    // Filter by search
+    // Filter តាមការស្វែងរក (Search)
     if (_searchC.text.isNotEmpty) {
       filtered = filtered.where((p) => p.title.toLowerCase().contains(_searchC.text.toLowerCase())).toList();
     }
 
+    _filteredProducts = filtered;
+  }
+
+  // មុខងារ Filter សម្រាប់ហៅប្រើប្រាស់នៅលើ UI (នៅពេលអ្នកប្រើប្រាស់ចុចផ្លាស់ប្តូរដោយផ្ទាល់)
+  void _applyFilter() {
     setState(() {
-      _filteredProducts = filtered;
+      _applyFilterWithoutState();
     });
   }
 
@@ -74,7 +102,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       case "women's clothing":
         return langProvider.translate('cat_women_clothing');
       default:
-        return category; // បើអត់មានក្នុងសៀវភៅពាក្យ ឱ្យបង្ហាញតម្លៃដើមពី API
+        return category; 
     }
   }
 
@@ -86,11 +114,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ២. ហៅប្រើ LanguageProvider នៅក្នុងទំព័រនេះ
     final langProvider = Provider.of<LanguageProvider>(context);
 
     return Scaffold(
-      // ៣. ប្ដូរចំណងជើង App Bar ទៅជាភាសាតាមការកំណត់ (Products -> ផលិតផល)
       appBar: AppBar(title: Text(langProvider.translate('products_title'))),
       body: FutureBuilder<List<Product>>(
         future: _productsFuture,
@@ -100,11 +126,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          
-          _allProducts = snapshot.data ?? [];
-          if (_filteredProducts.isEmpty && _allProducts.isNotEmpty) {
-            _filteredProducts = _allProducts;
           }
 
           return Column(
@@ -116,7 +137,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   controller: _searchC,
                   onChanged: (_) => _applyFilter(),
                   decoration: InputDecoration(
-                    // ៤. ប្ដូរអក្សរ Hint ក្នុងប្រឡោះស្វែងរក (Search products -> ស្វែងរកផលិតផល)
                     labelText: langProvider.translate('search_hint'),
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.search),
@@ -135,7 +155,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: FilterChip(
-                        // ៥. ហៅអនុគមន៍បកប្រែឈ្មោះប្រភេទទំនិញពី API ដើម្បីបង្ហាញជាភាសាខ្មែរ/អង់គ្លេស
                         label: Text(_getTranslatedCategory(cat, langProvider)),
                         selected: _selectedCategory == cat,
                         onSelected: (selected) {

@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Demo User",
+      "email": "demo@example.com",
+      "password": "demo123456",
+      "registrationDate": "2025-01-15T10:30:00Z",
+      "lastLoginDate": "2026-06-17T14:22:00Z",
+      "isActive": true,
+      "profile": {
+        "avatar": null,
+        "phone": "",
+        "address": "",
+        "city": "",
+        "country": ""
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2026-06-17T14:22:00Z",
+    "totalUsers": 1
+  }
+}

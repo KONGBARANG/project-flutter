@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/language_provider.dart'; 
+import '../../providers/language_provider.dart';
+import '../../services/local_data_service.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
               }
 
               return FilledButton(
-                onPressed: () {
+                onPressed: () async {
                   final email = _emailC.text.trim();
                   final password = _passC.text;
                   if (email.isEmpty || password.isEmpty) {
@@ -68,6 +69,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     return;
                   }
 
+                  // Validate credentials against database
+                  final user = await LocalDataService.validateLogin(email, password);
+                  if (user == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          langProvider.translate('invalid_credentials') ?? 'Invalid email or password'
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Update last login date
+                  user['lastLoginDate'] = DateTime.now().toIso8601String();
+                  await LocalDataService.addOrUpdateUser(user);
+
+                  if (!mounted) return;
                   context.read<AuthProvider>().login(email);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -96,6 +115,25 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             }),
             const SizedBox(height: 12),
+            // ប៊ូតុង Quick Login សម្រាប់ចូលដោយមិនបញ្ចូលទិន្នន័យ
+            Builder(builder: (context) {
+              final langProvider = Provider.of<LanguageProvider>(context);
+              return TextButton(
+                onPressed: () {
+                  const guestEmail = 'guest@example.com';
+                  context.read<AuthProvider>().login(guestEmail);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${langProvider.translate('logged_in_as') ?? 'Logged in as'} $guestEmail'
+                      ),
+                    ),
+                  );
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+                child: const Text('Quick Login'),
+              );
+            }),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/register');

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/language_provider.dart'; // ១. Import LanguageProvider ចូលមក
+import '../../providers/language_provider.dart';
+import '../products/product_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,7 +34,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. Promotional Hero Banner (ប្ដូរអក្សរខាងក្នុងតាមភាសា)
-            _buildPromoBanner(langProvider),
+            _buildPromoBanner(context, langProvider),
             const SizedBox(height: 24),
             
             // 2. Quick Categories
@@ -42,7 +43,7 @@ class HomeScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            _buildCategoryRow(langProvider),
+            _buildCategoryRow(context, langProvider),
             const SizedBox(height: 24),
             
             // 3. Trending Products (Horizontal Scroll)
@@ -55,7 +56,12 @@ class HomeScreen extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    // TODO: Navigate to the Shop page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProductListScreen(),
+                      ),
+                    );
                   },
                   child: Text(langProvider.translate('see_all')), // "មើលទាំងអស់" / "See All"
                 ),
@@ -71,7 +77,7 @@ class HomeScreen extends StatelessWidget {
 
   // --- Widget Builders ---
 
-  Widget _buildPromoBanner(LanguageProvider langProvider) {
+  Widget _buildPromoBanner(BuildContext context, LanguageProvider langProvider) {
     return Container(
       width: double.infinity,
       height: 200, 
@@ -110,7 +116,14 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ProductListScreen(),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.deepPurple,
@@ -123,31 +136,42 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryRow(LanguageProvider langProvider) {
+  Widget _buildCategoryRow(BuildContext context, LanguageProvider langProvider) {
     final categories = [
-      {'icon': Icons.checkroom, 'name': 'Clothes'},
-      {'icon': Icons.watch, 'name': 'Jewelry'},
-      {'icon': Icons.devices, 'name': 'Tech'},
-      {'icon': Icons.backpack, 'name': 'Bags'},
+      {'icon': Icons.checkroom, 'name': 'Clothes', 'apiValue': "men's clothing"},
+      {'icon': Icons.watch, 'name': 'Jewelry', 'apiValue': 'jewelery'},
+      {'icon': Icons.devices, 'name': 'Tech', 'apiValue': 'electronics'},
+      {'icon': Icons.backpack, 'name': 'Bags', 'apiValue': "women's clothing"},
     ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: categories.map((cat) {
         final rawName = cat['name'] as String;
-        return Column(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey.shade200,
-              child: Icon(cat['icon'] as IconData, color: Colors.deepPurple, size: 28),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _getTranslatedCategory(rawName, langProvider), // ប្ដូរឈ្មោះប្រភេទតាមភាសា (Clothes -> សម្លៀកបំពាក់)
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ],
+        final apiValue = cat['apiValue'] as String;
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ProductListScreen(initialCategory: apiValue),
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.grey.shade200,
+                child: Icon(cat['icon'] as IconData, color: Colors.deepPurple, size: 28),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _getTranslatedCategory(rawName, langProvider),
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
         );
       }).toList(),
     );
@@ -170,16 +194,10 @@ class HomeScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              // បកប្រែអក្សរលោតនៅក្នុង SnackBar ពេលចុចលើទំនិញ
-              final currentLang = langProvider.currentLocale;
-              final alertMsg = currentLang == 'km' 
-                  ? 'កំពុងបើកទំនិញពេញនិយមទី ${index + 1}...' 
-                  : 'Opening Trending Item ${index + 1}...';
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(alertMsg),
-                  duration: const Duration(seconds: 1),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductListScreen(initialSearch: 'Trending Item ${index + 1}'),
                 ),
               );
             },

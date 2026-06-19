@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
 import '../../providers/language_provider.dart';
+import '../../services/local_data_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -49,8 +50,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             else
               Builder(builder: (context) {
                 final langProvider = Provider.of<LanguageProvider>(context);
-
-                // ទាញយកពាក្យបកប្រែ បើគ្មានទេ (null ឬ ទទេ) ឱ្យដាក់ពាក្យ 'Register' ជំនួសដើម្បីការពារកុំឱ្យបាត់អក្សរ
                 String registerText = langProvider.translate('register') ?? 'Register';
                 if (registerText.trim().isEmpty) {
                   registerText = 'Register';
@@ -87,6 +86,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
 
                     setState(() => _loading = true);
+                    
+                    // Save user to database
+                    try {
+                      await LocalDataService.addOrUpdateUser({
+                        'name': name,
+                        'email': email,
+                        'password': pass,
+                        'registrationDate': DateTime.now().toIso8601String(),
+                        'isActive': true,
+                        'profile': {
+                          'avatar': null,
+                          'phone': '',
+                          'address': '',
+                          'city': '',
+                          'country': ''
+                        }
+                      });
+                    } catch (e) {
+                      // Continue even if save fails
+                    }
+                    
                     // Simulate registering process
                     await Future.delayed(const Duration(milliseconds: 800));
                     if (!mounted) return;
@@ -101,14 +121,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     navigator.pushNamed('/login', arguments: {'email': email});
                   },
                   style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF673AB7), // ពណ៌ស្វាយដិតស្របតាមម៉ូតរបស់បង
-                    minimumSize: const Size(double.infinity, 50), // ទទឹងពេញ កម្ពស់ ៥០ ងាយស្រួលចុច
+                    backgroundColor: const Color(0xFF673AB7),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12), // ជ្រុងមូលស្អាតសមសួន
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: Text(
-                    registerText, // បង្ហាញអក្សរដែលបានផ្ទៀងផ្ទាត់រួច (ធានាថាមិនបាត់អក្សរទៀតឡើយ)
+                    registerText,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
