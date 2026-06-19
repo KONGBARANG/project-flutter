@@ -13,6 +13,10 @@ import './screens/manage_profile_screen.dart';
 import './screens/password_security_screen.dart';
 import './screens/about_us_screen.dart';
 import './screens/appointments_screen.dart'; 
+import './screens/help_center_screen.dart';
+import './screens/privacy_policy_screen.dart';
+import './screens/terms_of_service_screen.dart';
+ // 🔥 កែតម្រូវផ្លូវ Import ឱ្យត្រឹមត្រូវ
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -187,17 +191,27 @@ class ProfileScreen extends StatelessWidget {
 
             // 4. ផ្នែក Support
             _buildSectionTitle('Support'),
+            
             _buildGroupCard([
               _buildListTile(Icons.help_outline, 'Help Center', () {
-                _showProfileInfoDialog(context, 'Help Center', 'Visit support for help with your account and orders.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
+                );
               }),
               _buildDivider(),
               _buildListTile(Icons.privacy_tip_outlined, 'Privacy Policy', () {
-                _showProfileInfoDialog(context, 'Privacy Policy', 'View the app privacy policy and data handling details.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
+                );
               }),
               _buildDivider(),
               _buildListTile(Icons.description_outlined, 'Terms of Service', () {
-                _showProfileInfoDialog(context, 'Terms of Service', 'Read the terms and conditions for using this app.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TermsOfServiceScreen()),
+                );
               }),
             ]),
             const SizedBox(height: 24),
