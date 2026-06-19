@@ -55,6 +55,22 @@ class LanguageProvider extends ChangeNotifier {
       'cat_jewelery_filter': 'jewelery',
       'cat_men_clothing': "men's clothing",
       'cat_women_clothing': "women's clothing",
+      // Auth related
+      'login': 'Login',
+      'register': 'Register',
+      'please_fill_email_pass': 'Please fill in email and password',
+      'logged_in_as': 'Logged in as',
+      'name_required': 'Name is required',
+      'email_required': 'Email is required',
+      'invalid_email': 'Invalid email',
+      'password_min_6': 'Password must be at least 6 characters',
+      'registered': 'Registered',
+        'add_to_cart': 'Add to Cart',
+        'added_to_cart': 'added to cart',
+          'proceed_to_checkout': 'Proceed to Checkout',
+            'place_order': 'Place Order',
+            'please_fill_all_fields': 'Please fill all fields',
+            'order_placed_for': 'Order placed for',
     },
     'km': {
       // === ផ្នែកម៉ឺនុយ និងការកំណត់ (Menu & Settings) ===
@@ -97,6 +113,22 @@ class LanguageProvider extends ChangeNotifier {
       'cat_jewelery_filter': 'គ្រឿងអលង្ការ',
       'cat_men_clothing': 'សម្លៀកបំពាក់បុរស',
       'cat_women_clothing': 'សម្លៀកបំពាក់នារី',
+      // Auth related
+      'login': 'ចូលប្រព័ន្ធ',
+      'register': 'ចុះឈ្មោះ',
+      'please_fill_email_pass': 'សូមបំពេញអ៊ីមែល និងពាក្យសម្ងាត់',
+      'logged_in_as': 'បានចូលជា',
+      'name_required': 'ត្រូវការឈ្មោះ',
+      'email_required': 'ត្រូវការអ៊ីមែល',
+      'invalid_email': 'អ៊ីមែលមិនត្រឹមត្រូវ',
+      'password_min_6': 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 6 តួអក្សរ',
+      'registered': 'បានចុះឈ្មោះ',
+      'add_to_cart': 'ថែមចូលកន្ត្រក',
+      'added_to_cart': 'បានបន្ថែមចូលកន្ត្រក',
+      'proceed_to_checkout': 'ទៅកាន់ការទូទាត់',
+      'place_order': 'ដាក់ការបញ្ជាទិញ',
+      'please_fill_all_fields': 'សូមបំពេញទាំងអស់',
+      'order_placed_for': 'ការបញ្ជាទិញបានដាក់សម្រាប់',
     }
   };
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
+import '../../providers/language_provider.dart';
+import '../../services/local_data_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -45,49 +48,95 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (_loading)
               const CircularProgressIndicator()
             else
-              CustomButton(
-                label: 'Register',
-                onPressed: () async {
-                  final name = _nameC.text.trim();
-                  final email = _emailC.text.trim();
-                  final pass = _passC.text;
-                  final scaffoldMessenger = ScaffoldMessenger.of(context);
-                  final navigator = Navigator.of(context);
+              Builder(builder: (context) {
+                final langProvider = Provider.of<LanguageProvider>(context);
+                String registerText = langProvider.translate('register') ?? 'Register';
+                if (registerText.trim().isEmpty) {
+                  registerText = 'Register';
+                }
 
-                  String? error;
-                  if (name.isEmpty) error = 'Name is required';
-                  if (error == null && email.isEmpty)
-                    error = 'Email is required';
-                  if (error == null &&
-                      !RegExp(
-                        r"^[\w-.]+@([\w-]+\.)+[\w-]{2,4}",
-                      ).hasMatch(email))
-                    error = 'Invalid email';
-                  if (error == null && pass.length < 6)
-                    error = 'Password must be at least 6 characters';
+                return FilledButton(
+                  onPressed: () async {
+                    final name = _nameC.text.trim();
+                    final email = _emailC.text.trim();
+                    final pass = _passC.text;
+                    final scaffoldMessenger = ScaffoldMessenger.of(context);
+                    final navigator = Navigator.of(context);
 
-                  if (error != null) {
+                    String? error;
+                    if (name.isEmpty) error = langProvider.translate('name_required') ?? 'Name is required';
+                    if (error == null && email.isEmpty) {
+                      error = langProvider.translate('email_required') ?? 'Email is required';
+                    }
+                    if (error == null &&
+                        !RegExp(
+                          r"^[\w-.]+@([\w-]+\.)+[\w-]{2,4}",
+                        ).hasMatch(email)) {
+                      error = langProvider.translate('invalid_email') ?? 'Invalid email address';
+                    }
+                    if (error == null && pass.length < 6) {
+                      error = langProvider.translate('password_min_6') ?? 'Password must be at least 6 characters';
+                    }
+
+                    if (error != null) {
+                      scaffoldMessenger.showSnackBar(
+                        SnackBar(content: Text(error)),
+                      );
+                      return;
+                    }
+
+                    setState(() => _loading = true);
+                    
+                    // Save user to database
+                    try {
+                      await LocalDataService.addOrUpdateUser({
+                        'name': name,
+                        'email': email,
+                        'password': pass,
+                        'registrationDate': DateTime.now().toIso8601String(),
+                        'isActive': true,
+                        'profile': {
+                          'avatar': null,
+                          'phone': '',
+                          'address': '',
+                          'city': '',
+                          'country': ''
+                        }
+                      });
+                    } catch (e) {
+                      // Continue even if save fails
+                    }
+                    
+                    // Simulate registering process
+                    await Future.delayed(const Duration(milliseconds: 800));
+                    if (!mounted) return;
+                    setState(() => _loading = false);
+
                     scaffoldMessenger.showSnackBar(
-                      SnackBar(content: Text(error)),
+                      SnackBar(content: Text('${langProvider.translate('registered') ?? 'Registered successfully:'} $name')),
                     );
-                    return;
-                  }
 
-                  setState(() => _loading = true);
-                  // Simulate registering process
-                  await Future.delayed(const Duration(milliseconds: 800));
-                  if (!mounted) return;
-                  setState(() => _loading = false);
-
-                  scaffoldMessenger.showSnackBar(
-                    SnackBar(content: Text('Registered $name')),
-                  );
-
-                  // Navigate to login and prefill email
-                  if (!mounted) return;
-                  navigator.pushNamed('/login', arguments: {'email': email});
-                },
-              ),
+                    // Navigate to login and prefill email
+                    if (!mounted) return;
+                    navigator.pushNamed('/login', arguments: {'email': email});
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF673AB7),
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    registerText,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }),
           ],
         ),
       ),

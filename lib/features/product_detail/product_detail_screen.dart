@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/product.dart';
-import '../../widgets/custom_button.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/language_provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
@@ -68,20 +70,39 @@ class ProductDetailScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                   
                   // Add to cart button
-                  CustomButton(
-                    label: 'Add to Cart',
-                    onPressed: () {
-                      // For demo purposes, we'll show a simple notification
-                      // In a real app, you'd use Provider to access CartProvider
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${product.title} added to cart'),
-                          duration: const Duration(seconds: 1),
+                  Builder(builder: (context) {
+                    final langProvider = Provider.of<LanguageProvider>(context);
+                    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+                    return FilledButton.icon(
+                      onPressed: () {
+                        cartProvider.addToCart(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product.title} ${langProvider.translate('added_to_cart')}'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        minimumSize: const Size(double.infinity, 54),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                      );
-                      Navigator.pop(context);
-                    },
-                  ),
+                      ),
+                      icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+                      label: Text(
+                        langProvider.translate('add_to_cart'),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),

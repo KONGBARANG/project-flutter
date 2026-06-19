@@ -50,7 +50,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 isNotificationOn = value;
               });
             },
-            activeColor: Colors.purple,
+            activeThumbColor: Colors.purple,
           ),
         ),
         
@@ -62,7 +62,7 @@ class _SettingScreenState extends State<SettingScreen> {
             onChanged: (value) {
               widget.onThemeChanged(value);
             },
-            activeColor: Colors.purple,
+            activeThumbColor: Colors.purple,
           ),
         ),
         

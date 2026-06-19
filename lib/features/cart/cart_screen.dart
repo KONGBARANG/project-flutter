@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/cart_item.dart';
 import '../../providers/cart_provider.dart';
-import '../../widgets/custom_button.dart';
+import '../../providers/language_provider.dart';
 
 class CartScreen extends StatefulWidget {
   final CartProvider cartProvider;
@@ -59,12 +60,37 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      CustomButton(
-                        label: 'Proceed to Checkout',
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/checkout');
-                        },
-                      ),
+                      Builder(builder: (context) {
+                        final langProvider = Provider.of<LanguageProvider>(context);
+
+                        return FilledButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/checkout');
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF673AB7),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                langProvider.translate('proceed_to_checkout'),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                            ],
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 ),

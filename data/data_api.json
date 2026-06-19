@@ -1,0 +1,581 @@
+{
+  "products": [
+    {
+      "id": 101,
+      "sku": "TSHIRT-BL-001",
+      "title": "Classic Cotton T-Shirt",
+      "description": "Soft, breathable 100% cotton t-shirt. Comfortable everyday wear.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/tshirt-blue-front.jpg",
+        "https://example.com/images/tshirt-blue-back.jpg"
+      ],
+      "price": 12.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "101-S", "size": "S", "stock": 12},
+        {"id": "101-M", "size": "M", "stock": 20},
+        {"id": "101-L", "size": "L", "stock": 8}
+      ],
+      "tags": ["clothing", "tshirt", "cotton"],
+      "rating": 4.3
+    },
+    {
+      "id": 102,
+      "sku": "MUG-COF-01",
+      "title": "Ceramic Coffee Mug 350ml",
+      "description": "Durable ceramic mug with comfortable handle. Dishwasher safe.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/mug-white.jpg"
+      ],
+      "price": 7.5,
+      "currency": "USD",
+      "variants": [
+        {"id": "102-STD", "size": "350ml", "stock": 50}
+      ],
+      "tags": ["mug", "kitchen", "gift"],
+      "rating": 4.6
+    },
+    {
+      "id": 103,
+      "sku": "HEADPH-ANC-200",
+      "title": "Wireless Headphones (ANC)",
+      "description": "Bluetooth wireless headphones with active noise cancellation and 20h battery life.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/headphones-front.jpg",
+        "https://example.com/images/headphones-case.jpg"
+      ],
+      "price": 79.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "103-BLK", "color": "Black", "stock": 15},
+        {"id": "103-WHT", "color": "White", "stock": 7}
+      ],
+      "tags": ["audio", "wireless", "headphones"],
+      "rating": 4.5
+    },
+    {
+      "id": 104,
+      "sku": "NOTEBOOK-80G",
+      "title": "Hardcover Notebook A5",
+      "description": "Premium hardcover notebook, 80gsm paper, 200 pages. Elastic closure and ribbon marker.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/notebook-a5.jpg"
+      ],
+      "price": 9.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "104-BL", "color": "Blue", "stock": 30},
+        {"id": "104-GR", "color": "Green", "stock": 22}
+      ],
+      "tags": ["paper", "notebook", "office"],
+      "rating": 4.2
+    },
+    {
+      "id": 105,
+      "sku": "HOODIE-OVR-002",
+      "title": "Oversized Fleece Hoodie",
+      "description": "Ultra-soft cotton blend fleece hoodie with a spacious kangaroo pocket.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/hoodie-black.jpg"
+      ],
+      "price": 34.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "105-M", "size": "M", "stock": 15},
+        {"id": "105-L", "size": "L", "stock": 25},
+        {"id": "105-XL", "size": "XL", "stock": 10}
+      ],
+      "tags": ["clothing", "hoodie", "fleece"],
+      "rating": 4.7
+    },
+    {
+      "id": 106,
+      "sku": "SMARTW-GEN5-09",
+      "title": "Fitness Tracker Smartwatch",
+      "description": "Waterproof smartwatch with heart rate monitor, sleep tracker, and AMOLED display.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/smartwatch.jpg"
+      ],
+      "price": 49.50,
+      "currency": "USD",
+      "variants": [
+        {"id": "106-BLK", "color": "Sport Black", "stock": 40},
+        {"id": "106-SLV", "color": "Silver Metallic", "stock": 18}
+      ],
+      "tags": ["gadget", "wearable", "smartwatch"],
+      "rating": 4.4
+    },
+    {
+      "id": 107,
+      "sku": "PAN-NONSTK-10",
+      "title": "Non-Stick Frying Pan 10-Inch",
+      "description": "Aluminum frying pan with scratch-resistant coating and ergonomic handle.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/pan-front.jpg"
+      ],
+      "price": 24.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "107-10IN", "size": "10 Inch", "stock": 14}
+      ],
+      "tags": ["cookware", "kitchen", "pan"],
+      "rating": 4.1
+    },
+    {
+      "id": 108,
+      "sku": "PEN-GEL-12PACK",
+      "title": "Premium Gel Pens (12-Pack)",
+      "description": "Smooth-writing fine point gel ink pens in assorted vibrant colors.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/pens-box.jpg"
+      ],
+      "price": 5.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "108-AST", "size": "0.5mm Pack", "stock": 100}
+      ],
+      "tags": ["writing", "pens", "school"],
+      "rating": 4.8
+    },
+    {
+      "id": 109,
+      "sku": "JEANS-SLM-003",
+      "title": "Slim Fit Stretch Jeans",
+      "description": "Classic five-pocket styling slim fit denim jeans with comfortable stretch.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/jeans-blue.jpg"
+      ],
+      "price": 29.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "109-30", "size": "W30/L32", "stock": 12},
+        {"id": "109-32", "size": "W32/L32", "stock": 35},
+        {"id": "109-34", "size": "W34/L32", "stock": 20}
+      ],
+      "tags": ["clothing", "jeans", "denim"],
+      "rating": 4.2
+    },
+    {
+      "id": 110,
+      "sku": "MOUSE-WRLS-55",
+      "title": "Ergonomic Wireless Mouse",
+      "description": "2.4GHz wireless mouse with adjustable DPI settings and side navigation buttons.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/mouse-top.jpg"
+      ],
+      "price": 18.25,
+      "currency": "USD",
+      "variants": [
+        {"id": "110-BLK", "color": "Matte Black", "stock": 55},
+        {"id": "110-GRY", "color": "Space Gray", "stock": 42}
+      ],
+      "tags": ["computer", "accessory", "mouse"],
+      "rating": 4.5
+    },
+    {
+      "id": 111,
+      "sku": "BLND-HI-1000",
+      "title": "High-Speed Countertop Blender",
+      "description": "1000-watt professional blender for smoothies, shakes, and crushing ice instantly.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/blender.jpg"
+      ],
+      "price": 65.00,
+      "currency": "USD",
+      "variants": [
+        {"id": "111-STD", "size": "1.5L Jug", "stock": 9}
+      ],
+      "tags": ["appliance", "blender", "smoothie"],
+      "rating": 4.6
+    },
+    {
+      "id": 112,
+      "sku": "MARK-HL-6PACK",
+      "title": "Chisel Tip Highlighters (6-Pack)",
+      "description": "Fluorescent pocket-sized highlighters with anti-smudge ink technology.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/highlighters.jpg"
+      ],
+      "price": 4.49,
+      "currency": "USD",
+      "variants": [
+        {"id": "112-6CH", "size": "6-Color Pack", "stock": 80}
+      ],
+      "tags": ["office", "school", "marker"],
+      "rating": 4.3
+    },
+    {
+      "id": 113,
+      "sku": "SHIRT-FLN-004",
+      "title": "Plaid Flannel Button-Down",
+      "description": "Mid-weight soft brushed cotton flannel shirt in a traditional plaid pattern.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/flannel-red.jpg"
+      ],
+      "price": 22.50,
+      "currency": "USD",
+      "variants": [
+        {"id": "113-M", "size": "M", "stock": 14},
+        {"id": "113-L", "size": "L", "stock": 19}
+      ],
+      "tags": ["clothing", "shirt", "flannel"],
+      "rating": 4.5
+    },
+    {
+      "id": 114,
+      "sku": "KB-MECH-RGB",
+      "title": "RGB Mechanical Keyboard",
+      "description": "Tactile blue switches mechanical gaming keyboard with customizable backlighting profiles.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/keyboard-rgb.jpg"
+      ],
+      "price": 54.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "114-BLU", "switch": "Blue Switch", "stock": 25},
+        {"id": "114-RED", "switch": "Red Switch", "stock": 15}
+      ],
+      "tags": ["computer", "gaming", "keyboard"],
+      "rating": 4.6
+    },
+    {
+      "id": 115,
+      "sku": "KTL-ELEC-17",
+      "title": "Electric Stainless Steel Kettle",
+      "description": "1.7-liter cordless rapid boil electric water kettle with auto shut-off protection.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/kettle.jpg"
+      ],
+      "price": 19.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "115-17L", "size": "1.7 Liter", "stock": 30}
+      ],
+      "tags": ["appliance", "kettle", "tea"],
+      "rating": 4.4
+    },
+    {
+      "id": 116,
+      "sku": "DESK-ORG-WD",
+      "title": "Wooden Desk Organizer Tray",
+      "description": "Natural bamboo multi-functional tabletop organizer for pens, mail, and sticky notes.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/organizer.jpg"
+      ],
+      "price": 14.95,
+      "currency": "USD",
+      "variants": [
+        {"id": "116-BMB", "color": "Natural Bamboo", "stock": 14}
+      ],
+      "tags": ["office", "desk", "storage"],
+      "rating": 4.1
+    },
+    {
+      "id": 117,
+      "sku": "SOCK-ATH-5PK",
+      "title": "Athletic Ankle Socks (5-Pack)",
+      "description": "Moisture-wicking cushion sole sports socks for running and workout exercises.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/socks-white.jpg"
+      ],
+      "price": 8.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "117-M", "size": "Medium", "stock": 60},
+        {"id": "117-L", "size": "Large", "stock": 45}
+      ],
+      "tags": ["clothing", "socks", "sport"],
+      "rating": 4.6
+    },
+    {
+      "id": 118,
+      "sku": "SPK-BT-PORT",
+      "title": "Portable Bluetooth Speaker",
+      "description": "IPX7 waterproof outdoor rugged portable speaker with rich bass and 12-hour playtime.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/speaker-blue.jpg"
+      ],
+      "price": 27.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "118-BLU", "color": "Ocean Blue", "stock": 22},
+        {"id": "118-RED", "color": "Fiery Red", "stock": 19}
+      ],
+      "tags": ["audio", "bluetooth", "speaker"],
+      "rating": 4.3
+    },
+    {
+      "id": 119,
+      "sku": "CONT-FD-12PC",
+      "title": "Food Storage Container Set",
+      "description": "12-piece airtight plastic meal prep containers with leak-proof locking lids.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/containers.jpg"
+      ],
+      "price": 16.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "119-SET", "size": "12-Piece Set", "stock": 40}
+      ],
+      "tags": ["kitchen", "storage", "mealprep"],
+      "rating": 4.5
+    },
+    {
+      "id": 120,
+      "sku": "CAL-DESK-2026",
+      "title": "Minimalist Monthly Desk Calendar",
+      "description": "Thick cardstock grid layout desk flip calendar with notes section.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/calendar2026.jpg"
+      ],
+      "price": 6.50,
+      "currency": "USD",
+      "variants": [
+        {"id": "120-STD", "size": "Standard", "stock": 120}
+      ],
+      "tags": ["office", "planning", "calendar"],
+      "rating": 4.7
+    },
+    {
+      "id": 121,
+      "sku": "JACKET-DEN-05",
+      "title": "Classic Denim Trucker Jacket",
+      "description": "Button-front closure durable cotton denim jacket with traditional chest pockets.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/denim-jacket.jpg"
+      ],
+      "price": 45.00,
+      "currency": "USD",
+      "variants": [
+        {"id": "121-S", "size": "S", "stock": 8},
+        {"id": "121-M", "size": "M", "stock": 14},
+        {"id": "121-L", "size": "L", "stock": 11}
+      ],
+      "tags": ["clothing", "jacket", "denim"],
+      "rating": 4.4
+    },
+    {
+      "id": 122,
+      "sku": "CHRG-WALL-GAN",
+      "title": "65W GaN Fast Wall Charger",
+      "description": "Compact dual USB-C and USB-A port quick power adapter for laptops and smartphones.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/charger-gan.jpg"
+      ],
+      "price": 21.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "122-WHT", "color": "White", "stock": 35}
+      ],
+      "tags": ["accessory", "charger", "fastcharge"],
+      "rating": 4.6
+    },
+    {
+      "id": 123,
+      "sku": "SPOON-WOD-4PK",
+      "title": "Wooden Cooking Spoons Set",
+      "description": "4-pack natural handcrafted non-scratch wooden utensils for nonstick pots.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/wood-spoons.jpg"
+      ],
+      "price": 9.45,
+      "currency": "USD",
+      "variants": [
+        {"id": "123-NAT", "size": "4-Pack", "stock": 50}
+      ],
+      "tags": ["utensils", "kitchen", "wood"],
+      "rating": 4.2
+    },
+    {
+      "id": 124,
+      "sku": "CLIP-BIND-BOX",
+      "title": "Assorted Binder Clips Set",
+      "description": "Box container of 100 colorful metal foldback binder paper clips in 3 sizes.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/binder-clips.jpg"
+      ],
+      "price": 3.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "124-MXD", "size": "100-Pack Mixed", "stock": 150}
+      ],
+      "tags": ["office", "clips", "paper"],
+      "rating": 4.5
+    },
+    {
+      "id": 125,
+      "sku": "PANTS-CHNO-01",
+      "title": "Slim Straight Chino Pants",
+      "description": "Comfortable stretch cotton twill casual chinos suitable for business office environment.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/chinos-khaki.jpg"
+      ],
+      "price": 32.00,
+      "currency": "USD",
+      "variants": [
+        {"id": "125-KHK-32", "size": "Khaki W32", "stock": 18},
+        {"id": "125-NVY-32", "size": "Navy W32", "stock": 22}
+      ],
+      "tags": ["clothing", "pants", "casual"],
+      "rating": 4.3
+    },
+    {
+      "id": 126,
+      "sku": "CABLE-USBC-3PK",
+      "title": "Braid Nylon USB-C to USB-C Cable",
+      "description": "3-pack heavy-duty fast charging syncing 6ft long data cables.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/cables-mesh.jpg"
+      ],
+      "price": 11.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "126-6FT", "size": "6 Feet Pack", "stock": 75}
+      ],
+      "tags": ["cable", "accessory", "usbc"],
+      "rating": 4.5
+    },
+    {
+      "id": 127,
+      "sku": "SCALE-DIG-KTCH",
+      "title": "Digital Kitchen Food Scale",
+      "description": "Slim glass top electronic weight scale with precise precision tare function button.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/kitchen-scale.jpg"
+      ],
+      "price": 13.50,
+      "currency": "USD",
+      "variants": [
+        {"id": "127-STD", "size": "Max 5kg", "stock": 28}
+      ],
+      "tags": ["kitchen", "scale", "baking"],
+      "rating": 4.6
+    },
+    {
+      "id": 128,
+      "sku": "STIK-NOTE-12",
+      "title": "Sticky Notes Pads (12-Pack)",
+      "description": "Classic square pastel self-stick removable adhesive memo reminder pad notes.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/sticky-notes.jpg"
+      ],
+      "price": 6.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "128-100", "size": "100 Sheets/Pad", "stock": 90}
+      ],
+      "tags": ["office", "school", "notes"],
+      "rating": 4.4
+    },
+    {
+      "id": 129,
+      "sku": "DRESS-SUM-FLOW",
+      "title": "Floral V-Neck Summer Dress",
+      "description": "Lightweight breathable casual A-line flounce sleeve women beach dress.",
+      "category": "Apparel",
+      "images": [
+        "https://example.com/images/summer-dress.jpg"
+      ],
+      "price": 26.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "129-S", "size": "S", "stock": 12},
+        {"id": "129-M", "size": "M", "stock": 16},
+        {"id": "129-L", "size": "L", "stock": 10}
+      ],
+      "tags": ["clothing", "dress", "floral"],
+      "rating": 4.5
+    },
+    {
+      "id": 130,
+      "sku": "PB-20000-FAST",
+      "title": "20000mAh Power Bank 22.5W",
+      "description": "High capacity portable external battery charger pack with digital LED percentage display.",
+      "category": "Electronics",
+      "images": [
+        "https://example.com/images/powerbank.jpg"
+      ],
+      "price": 28.50,
+      "currency": "USD",
+      "variants": [
+        {"id": "130-BLK", "color": "Carbon Black", "stock": 33}
+      ],
+      "tags": ["accessory", "battery", "powerbank"],
+      "rating": 4.7
+    },
+    {
+      "id": 131,
+      "sku": "GLOV-OVEN-SIL",
+      "title": "Silicone Oven Mitts (Pair)",
+      "description": "Heat resistant non-slip textured baking gloves with quilted inner soft cotton lining.",
+      "category": "Home & Kitchen",
+      "images": [
+        "https://example.com/images/oven-mitts.jpg"
+      ],
+      "price": 11.99,
+      "currency": "USD",
+      "variants": [
+        {"id": "131-RED", "color": "Classic Red", "stock": 25}
+      ],
+      "tags": ["kitchen", "baking", "safety"],
+      "rating": 4.4
+    },
+    {
+      "id": 132,
+      "sku": "FOLD-POCK-A4",
+      "title": "Expanding File Folder A4",
+      "description": "13 pockets plastic accordian document filing case expanding project organizer jacket wallet.",
+      "category": "Stationery",
+      "images": [
+        "https://example.com/images/file-folder.jpg"
+      ],
+      "price": 8.49,
+      "currency": "USD",
+      "variants": [
+        {"id": "132-A4", "size": "13 Pockets", "stock": 45}
+      ],
+      "tags": ["office", "filing", "document"],
+      "rating": 4.2
+    }
+  ],
+  "categories": [
+    {"id": 1, "name": "Apparel"},
+    {"id": 2, "name": "Electronics"},
+    {"id": 3, "name": "Home & Kitchen"},
+    {"id": 4, "name": "Stationery"}
+  ],
+  "meta": {
+    "generated": "2026-06-17T00:00:00Z",
+    "version": "1.0",
+    "source": "local-mock",
+    "total_lines_estimated": 1024
+  }
+}
