@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -45,7 +44,6 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
       _rawBody = res.body;
 
       if (res.statusCode >= 200 && res.statusCode < 300) {
-        // Try to pretty-print JSON, fallback to raw body
         try {
           final decoded = json.decode(res.body);
           final pretty = const JsonEncoder.withIndent('  ').convert(decoded);
@@ -96,7 +94,9 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            icon: _loading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.send),
+                            icon: _loading 
+                                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) 
+                                : const Icon(Icons.send),
                             label: const Text('Send'),
                             onPressed: _loading ? null : _callApi,
                             style: ElevatedButton.styleFrom(
@@ -123,6 +123,7 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
+                    // រក្សាទុកប៊ូតុងសម្រាប់ Load Local Products របស់អ្នក
                     Row(
                       children: [
                         Expanded(
@@ -170,76 +171,76 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
                   padding: const EdgeInsets.all(12.0),
                   child: _loading
                       ? const Center(child: CircularProgressIndicator())
-                                : _error != null
-                                    ? SingleChildScrollView(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Error: $_error', style: const TextStyle(color: Colors.red)),
-                                            const SizedBox(height: 8),
-                                            if (_statusCode != null) Text('Status: $_statusCode'),
-                                            if (_rawBody != null) ...[
-                                              const SizedBox(height: 8),
-                                              const Text('Raw body:'),
-                                              SelectableText(_rawBody!),
-                                            ],
-                                          ],
+                      : _error != null
+                          ? SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Error: $_error', style: const TextStyle(color: Colors.red)),
+                                  const SizedBox(height: 8),
+                                  if (_statusCode != null) Text('Status: $_statusCode'),
+                                  if (_rawBody != null) ...[
+                                    const SizedBox(height: 8),
+                                    const Text('Raw body:'),
+                                    SelectableText(_rawBody!),
+                                  ],
+                                ],
+                              ),
+                            )
+                          : _result != null || _rawBody != null
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (_statusCode != null) Text('Status: $_statusCode', style: const TextStyle(fontWeight: FontWeight.w600)),
+                                    const SizedBox(height: 8),
+                                    if (_responseHeaders != null) ExpansionTile(
+                                      title: const Text('Response Headers'),
+                                      children: _responseHeaders!.entries.map((e) => ListTile(title: Text(e.key), subtitle: Text(e.value))).toList(),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () => setState(() => _showRaw = false),
+                                            child: const Text('Pretty'),
+                                          ),
                                         ),
-                                      )
-                                    : _result != null || _rawBody != null
-                                        ? Column(
-                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                            children: [
-                                              if (_statusCode != null) Text('Status: $_statusCode', style: const TextStyle(fontWeight: FontWeight.w600)),
-                                              const SizedBox(height: 8),
-                                              if (_responseHeaders != null) ExpansionTile(
-                                                title: const Text('Response Headers'),
-                                                children: _responseHeaders!.entries.map((e) => ListTile(title: Text(e.key), subtitle: Text(e.value))).toList(),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: OutlinedButton(
-                                                      onPressed: () => setState(() => _showRaw = false),
-                                                      child: const Text('Pretty'),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Expanded(
-                                                    child: OutlinedButton(
-                                                      onPressed: () => setState(() => _showRaw = true),
-                                                      child: const Text('Raw'),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Expanded(
-                                                child: SingleChildScrollView(
-                                                  child: SelectableText(_showRaw ? (_rawBody ?? '') : (_result ?? _rawBody ?? '')),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: OutlinedButton.icon(
-                                                      onPressed: () async {
-                                                        final textToCopy = _showRaw ? (_rawBody ?? '') : (_result ?? _rawBody ?? '');
-                                                        await Clipboard.setData(ClipboardData(text: textToCopy));
-                                                        if (!mounted) return;
-                                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied response')));
-                                                      },
-                                                      icon: const Icon(Icons.copy),
-                                                      label: const Text('Copy'),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                        : const Center(child: Text('No response yet.')),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () => setState(() => _showRaw = true),
+                                            child: const Text('Raw'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: SelectableText(_showRaw ? (_rawBody ?? '') : (_result ?? _rawBody ?? '')),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton.icon(
+                                            onPressed: () async {
+                                              final textToCopy = _showRaw ? (_rawBody ?? '') : (_result ?? _rawBody ?? '');
+                                              await Clipboard.setData(ClipboardData(text: textToCopy));
+                                              if (!mounted) return;
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied response')));
+                                            },
+                                            icon: const Icon(Icons.copy),
+                                            label: const Text('Copy'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              : const Center(child: Text('No response yet.')),
                 ),
               ),
             ),

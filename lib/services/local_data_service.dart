@@ -12,8 +12,7 @@ class LocalDataService {
     return File('${dir.path}/userlogin.json');
   }
 
-  /// Loads the user login list from app documents if present, otherwise copies
-  /// from the bundled asset and returns it. Always returns a List of maps.
+  /// អានបញ្ជីឈ្មោះអ្នកប្រើប្រាស់ពីឯកសារ Local របស់ឧបករណ៍
   static Future<List<Map<String, dynamic>>> loadUserLogins() async {
     try {
       final local = await _localFile();
@@ -27,15 +26,12 @@ class LocalDataService {
         await local.writeAsString(content);
       }
 
-      // Handle both old array format and new database format
       final decoded = json.decode(content);
       List<dynamic> data;
       
       if (decoded is List) {
-        // Legacy format: direct array
         data = decoded;
       } else if (decoded is Map && decoded['users'] != null) {
-        // New format: { "users": [...], "metadata": {...} }
         data = decoded['users'] as List<dynamic>;
       } else {
         data = [];
@@ -47,7 +43,7 @@ class LocalDataService {
     }
   }
 
-  /// Validate login against stored users. Returns the user map if matched.
+  /// ផ្ទៀងផ្ទាត់ការ Login
   static Future<Map<String, dynamic>?> validateLogin(String email, String password) async {
     final users = await loadUserLogins();
     try {
@@ -60,61 +56,59 @@ class LocalDataService {
     return null;
   }
 
-  /// Adds a new user to the local store. Overwrites if same email exists.
-  /// Automatically updates metadata (totalUsers and lastUpdated).
-  static Future<void> addOrUpdateUser(Map<String, dynamic> user) async {
+  /// 🛠️ មុខងារសម្រាប់ធ្វើបច្ចុប្បន្នភាពលេខកូដសម្ងាត់ថ្មី
+  static Future<void> updatePassword(String email, String newPassword) async {
     try {
-      final local = await _localFile();
-      String content = '{"users":[], "metadata":{"version":"1.0","lastUpdated":"","totalUsers":0}}';
-      
-      if (await local.exists()) {
-        final existing = await local.readAsString();
-        if (existing.trim().isNotEmpty) {
-          content = existing;
-        }
-      }
-      
-      final decoded = json.decode(content);
-      List<Map<String, dynamic>> users = [];
-      
-      // Extract users array
-      if (decoded is Map && decoded['users'] != null) {
-        users = (decoded['users'] as List<dynamic>)
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
-      } else if (decoded is List) {
-        users = decoded
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
-      }
-      
-      // Add or update user with timestamp
-      final idx = users.indexWhere((u) => (u['email'] ?? '') == (user['email'] ?? ''));
-      final userWithTimestamp = {...user};
-      
+      final List<Map<String, dynamic>> users = await loadUserLogins();
+      final idx = users.indexWhere((u) => (u['email'] ?? '').toString() == email);
+
       if (idx >= 0) {
-        userWithTimestamp['lastLoginDate'] = DateTime.now().toIso8601String();
-        users[idx] = userWithTimestamp;
+        final updatedUser = Map<String, dynamic>.from(users[idx]);
+        updatedUser['password'] = newPassword;
+        updatedUser['lastLoginDate'] = DateTime.now().toIso8601String();
+        users[idx] = updatedUser;
       } else {
-        userWithTimestamp['id'] = (users.isNotEmpty ? users.map((u) => u['id'] as int? ?? 0).reduce((a, b) => a > b ? a : b) : 0) + 1;
-        userWithTimestamp['registrationDate'] = userWithTimestamp['registrationDate'] ?? DateTime.now().toIso8601String();
-        userWithTimestamp['isActive'] = userWithTimestamp['isActive'] ?? true;
-        users.add(userWithTimestamp);
+        throw Exception("រកមិនឃើញគណនីរបស់អ្នកនៅក្នុងប្រព័ន្ធទេ!");
       }
-      
-      // Build the database object with metadata
-      final dbObject = {
-        'users': users,
-        'metadata': {
-          'version': '1.0',
-          'lastUpdated': DateTime.now().toIso8601String(),
-          'totalUsers': users.length,
-        }
-      };
-      
-      await local.writeAsString(json.encode(dbObject));
+
+      await _saveToLocalFile(users);
     } catch (e) {
-      // Fallback: save as is
+      throw Exception("មិនអាចផ្លាស់ប្តូរលេខកូដសម្ងាត់បានទេ៖ $e");
     }
+  }
+
+  /// 🔥 មុខងារបន្ថែម ឬធ្វើបច្ចុប្បន្នភាពទិន្នន័យ User (ជួសជុលសម្រាប់ផ្ទាំង Login)
+  static Future<void> addOrUpdateUser(Map<String, dynamic> updatedUser) async {
+    try {
+      final List<Map<String, dynamic>> users = await loadUserLogins();
+      final email = (updatedUser['email'] ?? '').toString();
+      final idx = users.indexWhere((u) => (u['email'] ?? '').toString() == email);
+
+      if (idx >= 0) {
+        // បើមាន User ស្រាប់ (ករណី Login រួចធ្វើបច្ចុប្បន្នភាពថ្ងៃខែ)
+        users[idx] = Map<String, dynamic>.from(updatedUser);
+      } else {
+        // បើជា User ថ្មី (ករណី Register គណនីថ្មី)
+        users.add(Map<String, dynamic>.from(updatedUser));
+      }
+
+      await _saveToLocalFile(users);
+    } catch (e) {
+      throw Exception("មិនអាចរក្សាទុកទិន្នន័យអ្នកប្រើប្រាស់បានទេ៖ $e");
+    }
+  }
+
+  /// 📦 មុខងារជំនួយសម្រាប់សរសេរទិន្នន័យចូល File (ជៀសវាងការសរសេរកូដជាន់គ្នា)
+  static Future<void> _saveToLocalFile(List<Map<String, dynamic>> users) async {
+    final dbObject = {
+      'users': users,
+      'metadata': {
+        'version': '1.0',
+        'lastUpdated': DateTime.now().toIso8601String(),
+        'totalUsers': users.length,
+      }
+    };
+    final local = await _localFile();
+    await local.writeAsString(json.encode(dbObject));
   }
 }
