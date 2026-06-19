@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/custom_button.dart';
 import '../../providers/language_provider.dart';
+import '../../services/local_data_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -49,6 +50,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             else
               Builder(builder: (context) {
                 final langProvider = Provider.of<LanguageProvider>(context);
+                String registerText = langProvider.translate('register') ?? 'Register';
+                if (registerText.trim().isEmpty) {
+                  registerText = 'Register';
+                }
 
                 return FilledButton(
                   onPressed: () async {
@@ -59,16 +64,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     final navigator = Navigator.of(context);
 
                     String? error;
-                    if (name.isEmpty) error = langProvider.translate('name_required');
-                    if (error == null && email.isEmpty)
-                      error = langProvider.translate('email_required');
+                    if (name.isEmpty) error = langProvider.translate('name_required') ?? 'Name is required';
+                    if (error == null && email.isEmpty) {
+                      error = langProvider.translate('email_required') ?? 'Email is required';
+                    }
                     if (error == null &&
                         !RegExp(
                           r"^[\w-.]+@([\w-]+\.)+[\w-]{2,4}",
-                        ).hasMatch(email))
-                      error = langProvider.translate('invalid_email');
-                    if (error == null && pass.length < 6)
-                      error = langProvider.translate('password_min_6');
+                        ).hasMatch(email)) {
+                      error = langProvider.translate('invalid_email') ?? 'Invalid email address';
+                    }
+                    if (error == null && pass.length < 6) {
+                      error = langProvider.translate('password_min_6') ?? 'Password must be at least 6 characters';
+                    }
 
                     if (error != null) {
                       scaffoldMessenger.showSnackBar(
@@ -78,13 +86,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
 
                     setState(() => _loading = true);
+                    
+                    // Save user to database
+                    try {
+                      await LocalDataService.addOrUpdateUser({
+                        'name': name,
+                        'email': email,
+                        'password': pass,
+                        'registrationDate': DateTime.now().toIso8601String(),
+                        'isActive': true,
+                        'profile': {
+                          'avatar': null,
+                          'phone': '',
+                          'address': '',
+                          'city': '',
+                          'country': ''
+                        }
+                      });
+                    } catch (e) {
+                      // Continue even if save fails
+                    }
+                    
                     // Simulate registering process
                     await Future.delayed(const Duration(milliseconds: 800));
                     if (!mounted) return;
                     setState(() => _loading = false);
 
                     scaffoldMessenger.showSnackBar(
-                      SnackBar(content: Text('${langProvider.translate('registered')} $name')),
+                      SnackBar(content: Text('${langProvider.translate('registered') ?? 'Registered successfully:'} $name')),
                     );
 
                     // Navigate to login and prefill email
@@ -99,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   child: Text(
-                    langProvider.translate('register'),
+                    registerText,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

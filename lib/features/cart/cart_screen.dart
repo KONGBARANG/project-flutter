@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../models/cart_item.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/language_provider.dart';
-import '../../widgets/custom_button.dart';
 
 class CartScreen extends StatefulWidget {
   final CartProvider cartProvider;
