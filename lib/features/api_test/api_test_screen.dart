@@ -66,6 +66,23 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            try {
+              final data = await ApiServices.testGetPosts();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Title: ${data['title']}')),
+              );
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: $e')),
+              );
+            }
+          },
+          child: const Text('Call API test_Branch BARANG33'),
+=======
       appBar: AppBar(title: const Text('API Test')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -244,6 +261,7 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
               ),
             ),
           ],
+>>>>>>> 78b3476c845b746ac4e2dff49898193419fa42bd
         ),
       ),
     );
