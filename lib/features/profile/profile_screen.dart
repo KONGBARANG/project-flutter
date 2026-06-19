@@ -5,8 +5,14 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/profile_provider.dart';
-import '../../providers/theme_provider.dart'; // Import ដើម្បីទាញយកស្ថានភាព Light/Dark Mode
+import '../../providers/theme_provider.dart';
 import '../notification/notification_screen.dart';
+
+// 🔥 ដំណោះស្រាយ៖ កែតម្រូវផ្លូវ Import ឱ្យត្រឹមត្រូវ (ដក /screens/ ចេញ ព្រោះស្ថិតក្នុង Folder ជាមួយគ្នាស្រាប់)
+import './screens/manage_profile_screen.dart';
+import './screens/password_security_screen.dart';
+import './screens/about_us_screen.dart';
+import './screens/appointments_screen.dart'; 
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -15,15 +21,14 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final langProvider = Provider.of<LanguageProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context); // ហៅប្រើប្រាស់សម្រាប់បង្ហាញស្ថានភាព Theme
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // ទាញយកព័ត៌មាន User (បើគ្មានទេ ដាក់តម្លៃលំនាំដើម)
     final String userName = authProvider.email?.split('@').first ?? 'Guest User';
     final String userEmail = authProvider.email ?? 'user@example.com';
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F7), // ពណ៌ផ្ទៃក្រោយ
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F7),
       appBar: AppBar(
         title: Text(
           langProvider.translate('profile'),
@@ -38,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. ប្រអប់ព័ត៌មានអ្នកប្រើប្រាស់ (User Header Card ដូចគំរូ)
+            // 1. User Header Card
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -119,15 +124,21 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // 2. ផ្នែក Account (លំដាប់លំដោយត្រឹមត្រូវតាមរូបភាពគំរូ)
+            // 2. ផ្នែក Account (Manage Profile ដំណើរការបានយ៉ាងរលូន)
             _buildSectionTitle('Account'),
             _buildGroupCard([
               _buildListTile(Icons.person_outline, 'Manage Profile', () {
-                _showProfileInfoDialog(context, 'Manage Profile', 'Profile edit screen coming soon.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ManageProfileScreen()),
+                );
               }),
               _buildDivider(),
               _buildListTile(Icons.lock_open_outlined, 'Password & Security', () {
-                _showProfileInfoDialog(context, 'Password & Security', 'Security settings screen coming soon.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PasswordSecurityScreen()),
+                );
               }),
               _buildDivider(),
               _buildListTile(Icons.notifications_none_outlined, 'Notifications', () {
@@ -146,30 +157,35 @@ class ProfileScreen extends StatelessWidget {
             ]),
             const SizedBox(height: 20),
 
-            // 3. ផ្នែក Preferences (លំដាប់លំដោយត្រឹមត្រូវតាមរូបភាពគំរូ)
+            // 3. ផ្នែក Preferences
             _buildSectionTitle('Preferences'),
             _buildGroupCard([
               _buildListTile(Icons.assignment_outlined, 'About Us', () {
-                _showProfileInfoDialog(context, 'About Us', 'Information about our application team.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AboutUsScreen()),
+                );
               }),
               _buildDivider(),
               _buildListTile(
                 Icons.brightness_6_outlined, 
                 'Theme', 
                 () {
-                  // ចុចទៅប្តូរ Mode (Toggle Theme)
                   themeProvider.toggleTheme(!themeProvider.isDarkMode);
                 },
-                trailingText: themeProvider.isDarkMode ? 'Dark' : 'Light', // បង្ហាញ Text តាម State ពិត
+                trailingText: themeProvider.isDarkMode ? 'Dark' : 'Light',
               ),
               _buildDivider(),
               _buildListTile(Icons.calendar_today_outlined, 'Appointments', () {
-                _showProfileInfoDialog(context, 'Appointments', 'Your scheduled appointments will appear here.');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AppointmentsScreen()),
+                );
               }),
             ]),
             const SizedBox(height: 20),
 
-            // 4. ផ្នែក Support (លំដាប់លំដោយត្រឹមត្រូវតាមរូបភាពគំរូ)
+            // 4. ផ្នែក Support
             _buildSectionTitle('Support'),
             _buildGroupCard([
               _buildListTile(Icons.help_outline, 'Help Center', () {
@@ -213,7 +229,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // Widget សម្រាប់បង្ហាញចំណងជើងផ្នែកនីមួយៗ
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
@@ -224,7 +239,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // Widget សម្រាប់បង្កើតប្រអប់ Card ព័ទ្ធជុំវិញបញ្ជីនីមួយៗ
   Widget _buildGroupCard(List<Widget> children) {
     return Builder(
       builder: (context) => Container(
@@ -244,7 +258,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // Widget សម្រាប់បង្កើតជួរ List Item នីមួយៗឱ្យទន់ភ្លន់ Clean
   Widget _buildListTile(IconData icon, String title, VoidCallback onTap, {String? trailingText}) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -262,19 +275,18 @@ class ProfileScreen extends StatelessWidget {
               style: TextStyle(color: Colors.grey[400], fontSize: 14),
             ),
           const SizedBox(width: 6),
-          Icon(Icons.arrow_forward_ios, color: Colors.grey[300], size: 14), // ប្តូរជាព្រួញស្តើងបែប iOS
+          Icon(Icons.arrow_forward_ios, color: Colors.grey[300], size: 14),
         ],
       ),
       onTap: onTap,
     );
   }
 
-  // បន្ទាត់ខណ្ឌស្តើងៗរវាងជួរនីមួយៗ
   Widget _buildDivider() {
     return Divider(
       height: 1,
       thickness: 0.5,
-      indent: 54, // រំកិលបន្ទាត់ឱ្យផុតពី Icon ខាងមុខ មើលទៅ Clean ដូច iOS
+      indent: 54,
       color: const Color.fromRGBO(238, 238, 238, 0.5),
     );
   }
