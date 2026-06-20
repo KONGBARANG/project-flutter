@@ -3,29 +3,37 @@ import '../models/order_model.dart';
 import '../models/cart_item.dart';
 
 class OrderProvider with ChangeNotifier {
-  // ប្រើប្រាស់បញ្ជីឯកជនដើម្បីការពារទិន្នន័យពីការផ្លាស់ប្តូរដោយផ្ទាល់
+  // ប្រើប្រាស់ _orders ជា private ដើម្បីការពារការកែប្រែផ្ទាល់ពីខាងក្រៅ
   final List<OrderItem> _orders = [];
 
-  // Getter ដើម្បីទាញយកបញ្ជីការកម្ម៉ង់ទាំងអស់
-  List<OrderItem> get orders {
-    return [..._orders];
-  }
+  // Getter សម្រាប់ទាញយកបញ្ជីការបញ្ជាទិញ (ការពារការកែប្រែដោយប្រើ [...])
+  List<OrderItem> get orders => [..._orders];
 
-  // មុខងារសម្រាប់បន្ថែមការកម្ម៉ង់ថ្មី
+  // បន្ថែមការត្រួតពិនិត្យដើម្បីកុំឱ្យ add ចូលទទេ
   void addOrder(List<CartItem> cartProducts, double total) {
+    if (cartProducts.isEmpty) return;
+
+    // បង្កើត List ថ្មីពី cartProducts ដើម្បីការពារទិន្នន័យ (Deep Copy)
+    final List<CartItem> orderItems = List.from(cartProducts);
+
     _orders.insert(
-      0, // បញ្ចូល order ថ្មីទៅខាងលើគេនៃបញ្ជី
+      0, 
       OrderItem(
-        id: DateTime.now().toString(), // បង្កើត ID តាមពេលវេលាជាក់ស្តែង
+        id: DateTime.now().toIso8601String(), // ប្រើ format នេះសម្រាប់ ID ដែលស្អាតជាង
         amount: total,
-        products: cartProducts,
+        products: orderItems,
         dateTime: DateTime.now(),
       ),
     );
-    notifyListeners(); // ជូនដំណឹងទៅ UI ឱ្យធ្វើការ Refresh
+    notifyListeners(); // ជូនដំណឹងដល់ UI ឱ្យ Update
   }
 
-  // មុខងារសម្រាប់លុបការកម្ម៉ង់ (ស្រេចចិត្ត - ប្រសិនបើអ្នកត្រូវការ)
+  // បន្ថែមមុខងារលុប Order មួយជាក់លាក់ (ជាជម្រើសបន្ថែម)
+  void removeOrder(String orderId) {
+    _orders.removeWhere((order) => order.id == orderId);
+    notifyListeners();
+  }
+
   void clearOrders() {
     _orders.clear();
     notifyListeners();

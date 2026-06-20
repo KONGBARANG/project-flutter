@@ -9,7 +9,7 @@ import '../products/product_list_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/language_provider.dart'; // ១. Import LanguageProvider ចូលមក
+import '../../providers/language_provider.dart';
 
 class MainWrapperScreen extends StatefulWidget {
   final bool isDarkMode;
@@ -32,22 +32,18 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
   @override
   void initState() {
     super.initState();
+    // កែសម្រួលចំណុចនេះ៖ ហៅ CartScreen() ដោយមិនចាំបាច់បញ្ជូន cartProvider
     _pages = [
       const HomeScreen(),         // Index 0
       const NotificationScreen(), // Index 1
       const ProfileScreen(),      // Index 2
-      
-      // បោះតម្លៃ variables ទៅឱ្យ SettingScreen ដើម្បីបញ្ជាដូរ Theme
-      SettingScreen(
+      SettingScreen(              // Index 3
         isDarkMode: widget.isDarkMode,
         onThemeChanged: widget.onThemeChanged,
-      ),                          // Index 3
-      
+      ),
       const ApiTestScreen(),      // Index 4
       const ProductListScreen(),  // Index 5
-      Consumer<CartProvider>(
-        builder: (context, cartProvider, _) => CartScreen(cartProvider: cartProvider),
-      ),                          // Index 6
+      const CartScreen(),         // Index 6 (បានកែត្រង់នេះ)
     ];
   }
 
@@ -60,8 +56,6 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
-    
-    // ២. ហៅប្រើ LanguageProvider ដើម្បីទាញពាក្យបកប្រែ
     final langProvider = Provider.of<LanguageProvider>(context);
 
     if (!auth.isLoggedIn) {
@@ -71,12 +65,10 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
       return const SizedBox.shrink();
     }
 
-    // បង្កើតបញ្ជី index សម្រាប់ម៉ាបជាមួយ BottomNavigationBar (ដែលមានតែ ៤ ប៊ូតុង)
     final List<int> navBarIndices = [0, 3, 4, 5];
-    
     int currentNavBarIndex = navBarIndices.indexOf(_selectedIndex);
     if (currentNavBarIndex == -1) {
-      currentNavBarIndex = 0; 
+      currentNavBarIndex = 0;
     }
 
     return Scaffold(
@@ -85,13 +77,12 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: langProvider.translate('logout'), // ៣. ប្រើភាសាតាម Provider លើ Tooltip
+            tooltip: langProvider.translate('logout'),
             onPressed: () {
               auth.logout();
               Navigator.pushReplacementNamed(context, '/');
             },
           ),
-          // Cart badge លើ AppBar
           Consumer<CartProvider>(
             builder: (context, cartProvider, _) => Padding(
               padding: const EdgeInsets.only(right: 16.0),
@@ -100,7 +91,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.shopping_cart),
-                    onPressed: () => _onItemTapped(6), 
+                    onPressed: () => _onItemTapped(6),
                   ),
                   if (cartProvider.itemCount > 0)
                     Container(
@@ -129,13 +120,13 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             DrawerHeader(
               decoration: const BoxDecoration(color: Colors.deepPurple),
               child: Text(
-                langProvider.translate('settings'), // ៤. ប្ដូរចំណងជើង Menu ធំ
+                langProvider.translate('settings'),
                 style: const TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: Text(langProvider.translate('home')), // ៥. ភាសាខ្មែរ/អង់គ្លេស លើ Home
+              title: Text(langProvider.translate('home')),
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(0);
@@ -143,7 +134,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.shopping_bag),
-              title: Text(langProvider.translate('shop')), // ៦. ភាសាខ្មែរ/អង់គ្លេស លើ Products
+              title: Text(langProvider.translate('shop')),
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(5);
@@ -151,7 +142,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.shopping_cart),
-              title: Text(langProvider.translate('cart')), // ៧. ភាសាខ្មែរ/អង់គ្លេស លើ Cart
+              title: Text(langProvider.translate('cart')),
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(6);
@@ -159,7 +150,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: Text(langProvider.translate('profile')), // ៨. ភាសាខ្មែរ/អង់គ្លេស លើ Profile
+              title: Text(langProvider.translate('profile')),
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(2);
@@ -167,7 +158,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: Text(langProvider.translate('settings')), // ៩. ភាសាខ្មែរ/អង់គ្លេស លើ Settings
+              title: Text(langProvider.translate('settings')),
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(3);
@@ -175,7 +166,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.notifications),
-              title: Text(langProvider.translate('notif')), // ១០. ភាសាខ្មែរ/អង់គ្លេស លើ Notifications
+              title: Text(langProvider.translate('notif')),
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(1);
@@ -185,7 +176,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: Text(
-                langProvider.translate('logout'), // ១១. ភាសាខ្មែរ/អង់គ្លេស លើ Logout
+                langProvider.translate('logout'),
                 style: const TextStyle(color: Colors.red),
               ),
               onTap: () {
@@ -198,8 +189,6 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
         ),
       ),
       body: _pages[_selectedIndex],
-      
-      // ១២. ប្ដូរអក្សរនៅលើរបារខាងក្រោម (BottomNavigationBar) ទាំង ៤ គ្រាប់
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentNavBarIndex,
@@ -208,19 +197,19 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home), 
+            icon: const Icon(Icons.home),
             label: langProvider.translate('home'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings), 
+            icon: const Icon(Icons.settings),
             label: langProvider.translate('settings'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.api), 
+            icon: const Icon(Icons.api),
             label: langProvider.translate('api'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.store), 
+            icon: const Icon(Icons.store),
             label: langProvider.translate('shop'),
           ),
         ],
