@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import '../../models/product.dart';
 import '../../services/api_services.dart';
 import '../product_detail/product_detail_screen.dart';
-import '../../providers/language_provider.dart'; 
+import '../../providers/language_provider.dart';
+import '../../providers/cart_provider.dart'; // សូមកែសម្រួល path នេះឱ្យត្រូវនឹងទីតាំងឯកសាររបស់អ្នក
 
 class ProductListScreen extends StatefulWidget {
   final String? initialCategory;
@@ -219,35 +220,67 @@ class ProductCard extends StatelessWidget {
                 color: Colors.grey[200],
                 width: double.infinity,
                 child: Image.network(
-                  product.image, 
-                  fit: BoxFit.cover, 
+                  product.image,
+                  fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => const Icon(Icons.image),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.title, 
-                    maxLines: 2, 
-                    overflow: TextOverflow.ellipsis, 
+                    product.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '\$${product.price.toStringAsFixed(2)}', 
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                      // តម្លៃដែលប្រើ Expanded ដើម្បីការពារការ Overflow
+                      Expanded(
+                        child: Text(
+                          '\$${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold, 
+                            color: Colors.green
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+                      // ការរៀបចំ Rating និង ប៊ូតុងបញ្ជាទិញ
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.star, size: 14, color: Colors.amber),
-                          Text('${product.rating}', style: const TextStyle(fontSize: 12)),
+                          const Icon(Icons.star, size: 12, color: Colors.amber),
+                          const SizedBox(width: 2),
+                          Flexible(
+                            child: Text(
+                              product.rating.toStringAsFixed(1),
+                              style: const TextStyle(fontSize: 11),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          // ប៊ូតុង Add to Cart
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
+                            icon: const Icon(Icons.add_shopping_cart, size: 16),
+                            onPressed: () {
+                              // បន្ថែម Logic សម្រាប់ហៅ CartProvider
+                              Provider.of<CartProvider>(context, listen: false).addToCart(product);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${product.title} added to cart!'),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],

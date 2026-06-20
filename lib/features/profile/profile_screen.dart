@@ -273,12 +273,14 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildListTile(IconData icon, String title, VoidCallback onTap, {String? trailingText}) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      leading: Icon(icon, color: Colors.grey[700], size: 22),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+        leading: Icon(icon, color: Colors.grey[700], size: 22),
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -293,6 +295,7 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
       onTap: onTap,
+      ),
     );
   }
 

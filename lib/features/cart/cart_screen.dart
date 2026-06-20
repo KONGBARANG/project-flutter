@@ -4,65 +4,66 @@ import '../../models/cart_item.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/language_provider.dart';
 
-class CartScreen extends StatefulWidget {
-  final CartProvider cartProvider;
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
 
-  const CartScreen({super.key, required this.cartProvider});
-
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Shopping Cart')),
-      body: widget.cartProvider.items.isEmpty
-          ? const Center(child: Text('Your cart is empty'))
-          : Column(
-              children: [
-                // Cart items list
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: widget.cartProvider.items.length,
-                    itemBuilder: (context, index) {
-                      final item = widget.cartProvider.items[index];
-                      return CartItemCard(
-                        item: item,
-                        onQuantityChanged: (quantity) {
-                          widget.cartProvider.updateQuantity(item.product.id, quantity);
-                          setState(() {});
-                        },
-                        onRemove: () {
-                          widget.cartProvider.removeFromCart(item.product.id);
-                          setState(() {});
-                        },
-                      );
-                    },
-                  ),
-                ),
-                
-                // Divider
-                const Divider(),
-                
-                // Total and checkout
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Total:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                          Text('\$${widget.cartProvider.totalPrice.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.green)),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Builder(builder: (context) {
-                        final langProvider = Provider.of<LanguageProvider>(context);
+      body: Consumer<CartProvider>(
+        builder: (context, cart, child) {
+          if (cart.items.isEmpty) {
+            return const Center(child: Text('Your cart is empty'));
+          }
 
+          return Column(
+            children: [
+              // Cart items list
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cart.items.length,
+                  itemBuilder: (context, index) {
+                    final item = cart.items[index];
+                    return CartItemCard(
+                      item: item,
+                      onQuantityChanged: (newQuantity) {
+                        // កែសម្រួល Logic: បើចំនួនតិចជាងឬស្មើ 0 ឱ្យលុបចេញ
+                        if (newQuantity <= 0) {
+                          cart.removeFromCart(item.product.id);
+                        } else {
+                          cart.updateQuantity(item.product.id, newQuantity);
+                        }
+                      },
+                      onRemove: () {
+                        cart.removeFromCart(item.product.id);
+                      },
+                    );
+                  },
+                ),
+              ),
+
+              const Divider(),
+
+              // Total and checkout section
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text('\$${cart.totalPrice.toStringAsFixed(2)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.green)),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Checkout Button
+                    Consumer<LanguageProvider>(
+                      builder: (context, lang, child) {
                         return FilledButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/checkout');
@@ -70,32 +71,27 @@ class _CartScreenState extends State<CartScreen> {
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF673AB7),
                             minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                langProvider.translate('proceed_to_checkout'),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              Text(lang.translate('proceed_to_checkout'),
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                               const SizedBox(width: 8),
                               const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
                             ],
                           ),
                         );
-                      }),
-                    ],
-                  ),
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -124,7 +120,11 @@ class CartItemCard extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              color: Colors.grey[200],
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[200],
+              ),
+              clipBehavior: Clip.antiAlias,
               child: Image.network(
                 item.product.image,
                 fit: BoxFit.cover,
@@ -132,14 +132,18 @@ class CartItemCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            
+
             // Product info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.product.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text('\$${item.product.price.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                  Text(item.product.title, 
+                       maxLines: 2, 
+                       overflow: TextOverflow.ellipsis, 
+                       style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('\$${item.product.price.toStringAsFixed(2)}', 
+                       style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -161,7 +165,7 @@ class CartItemCard extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Remove button
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
